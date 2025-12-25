@@ -81,3 +81,81 @@ CREATE TABLE IF NOT EXISTS public."pages"
 
 ALTER TABLE IF EXISTS public."pages"
     OWNER to devuser;
+
+
+-- Table: public.compte 
+CREATE TABLE IF NOT EXISTS public.compte
+(
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id integer NOT NULL,
+    nom character varying(100) NOT NULL,
+    description text,
+    date_creation date NOT NULL DEFAULT CURRENT_DATE,
+    taux_remuneration numeric(5, 2),
+    taux_imposition numeric(5, 2),
+    date_updated date,
+    CONSTRAINT fk_user_compte FOREIGN KEY (user_id)
+        REFERENCES public."user" (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+);
+
+-- Table: public.depense 
+CREATE TABLE IF NOT EXISTS public.depense
+(
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    compte_id integer NOT NULL,
+    nom character varying(100) NOT NULL,
+    description text,
+    date_debut timestamp without time zone NOT NULL,
+    date_fin timestamp without time zone,
+    montant numeric(10, 2) NOT NULL,
+    date_updated date,
+    CONSTRAINT fk_compte_depense FOREIGN KEY (compte_id)
+        REFERENCES public.compte (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+);
+
+-- Table: public.duree_depense 
+CREATE TABLE IF NOT EXISTS public.duree_depense
+(
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    depense_id integer NOT NULL,
+    ponctuelle boolean NOT NULL DEFAULT TRUE,
+    iteration integer,
+    CONSTRAINT fk_depense_duree FOREIGN KEY (depense_id)
+        REFERENCES public.depense (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+);
+
+-- Table: public.revenus 
+CREATE TABLE IF NOT EXISTS public.revenus
+(
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    compte_id integer NOT NULL,
+    nom character varying(100) NOT NULL,
+    description text,
+    date_debut timestamp without time zone NOT NULL,
+    date_fin timestamp without time zone,
+    montant numeric(10, 2) NOT NULL,
+    date_updated date,
+    CONSTRAINT fk_compte_revenus FOREIGN KEY (compte_id)
+        REFERENCES public.compte (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+);
+
+-- Table: public.duree_revenus
+CREATE TABLE IF NOT EXISTS public.duree_revenus
+(
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    revenus_id integer NOT NULL,
+    ponctuelle boolean NOT NULL DEFAULT TRUE,
+    iteration integer,
+    CONSTRAINT fk_revenus_duree FOREIGN KEY (revenus_id)
+        REFERENCES public.revenus (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+);

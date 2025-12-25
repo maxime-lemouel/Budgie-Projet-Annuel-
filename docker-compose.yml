@@ -5,11 +5,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: php-apache-perso
+    container_name: budgie-web
     ports:
-      - "8080:80"             # Accès HTTP à Apache -> http://localhost:8080
+      - "8080:80"
     volumes:
-      - ./www:/var/www/html:cached  # ton code PHP (www/)
+      - .:/var/www/html:cached
       - ./php.ini:/usr/local/etc/php/conf.d/custom.ini:ro
     environment:
       - APACHE_LOG_DIR=/var/log/apache2
@@ -19,7 +19,7 @@ services:
 
   db:
     image: postgres:15-alpine
-    container_name: pg-db-perso
+    container_name: budgie-d
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -28,31 +28,28 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
-      - "5432:5432"           # optionnel, utile si tu veux te connecter depuis l'hôte
+      - "5432:5432"
 
   pgadmin:
     image: dpage/pgadmin4:7
-    container_name: pgadmin-perso
+    container_name: budgie-pgadmin
     restart: unless-stopped
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     ports:
-      - "5050:80"             # Accès pgAdmin -> http://localhost:5050
+      - "5051:80"
     volumes:
       - pgadmin-data:/var/lib/pgadmin
     depends_on:
       - db
 
   mailhog:
-    image: mailhog/mailhog:latest
-    container_name: mailhog-perso
-    restart: unless-stopped
+    image: mailhog/mailhog
+    container_name: budgie-mailhog
     ports:
-      - "1025:1025"           # Port SMTP
-      - "8025:8025"           # Interface web -> http://localhost:8025
-    logging:
-      driver: none            # Désactiver les logs pour ne pas polluer
+      - "8025:8025"
+      - "1025:1025"
 
 volumes:
   pgdata:
