@@ -9,7 +9,7 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - .:/var/www/html:cached
+      - ./www:/var/www/html:cached
       - ./php.ini:/usr/local/etc/php/conf.d/custom.ini:ro
     environment:
       - APACHE_LOG_DIR=/var/log/apache2
@@ -38,7 +38,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     ports:
-      - "5051:80"
+      - "5050:80"
     volumes:
       - pgadmin-data:/var/lib/pgadmin
     depends_on:
