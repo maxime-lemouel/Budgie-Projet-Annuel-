@@ -4,7 +4,7 @@
     <title>Frontoffice</title>
 </head>
 <body>
-<h1>MINI WORDPRESS</h1>
+<!-- <h1>MINI WORDPRESS</h1> -->
 
 <?php include $this->viewPath; ?>
 
@@ -15,10 +15,10 @@
     <?php } elseif ($_SERVER["REQUEST_URI"] == "/") { ?>
 
     <?php }else{?>
-        <a href="/">Accueil</a><br>
+        <!-- <a href="/">Accueil</a><br>  -->
     <?php } ?>
 
-    <marquee>mini WordPress</marquee>
+    <!-- <marquee>mini WordPress</marquee> -->
 </footer>
 </body>
 </html>
