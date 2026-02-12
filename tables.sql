@@ -96,7 +96,6 @@ CREATE TABLE IF NOT EXISTS public.compte
     date_updated date,
     CONSTRAINT fk_user_compte FOREIGN KEY (user_id)
         REFERENCES public."user" (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
         ON DELETE CASCADE
 );
 
@@ -113,7 +112,6 @@ CREATE TABLE IF NOT EXISTS public.depense
     date_updated date,
     CONSTRAINT fk_compte_depense FOREIGN KEY (compte_id)
         REFERENCES public.compte (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
         ON DELETE CASCADE
 );
 
@@ -126,7 +124,6 @@ CREATE TABLE IF NOT EXISTS public.duree_depense
     iteration integer,
     CONSTRAINT fk_depense_duree FOREIGN KEY (depense_id)
         REFERENCES public.depense (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
         ON DELETE CASCADE
 );
 
@@ -143,7 +140,6 @@ CREATE TABLE IF NOT EXISTS public.revenus
     date_updated date,
     CONSTRAINT fk_compte_revenus FOREIGN KEY (compte_id)
         REFERENCES public.compte (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
         ON DELETE CASCADE
 );
 
@@ -156,6 +152,5 @@ CREATE TABLE IF NOT EXISTS public.duree_revenus
     iteration integer,
     CONSTRAINT fk_revenus_duree FOREIGN KEY (revenus_id)
         REFERENCES public.revenus (id) MATCH SIMPLE
-        ON UPDATE NO ACTION
         ON DELETE CASCADE
 );

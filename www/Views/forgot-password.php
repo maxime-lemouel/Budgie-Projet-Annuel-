@@ -1,8 +1,18 @@
-<?php
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mot de passe oublié</title>
+    <link rel="stylesheet" href="scss/forgot.scss"> 
+
+    <div class="card">
+    <?php
+
 $errors = json_decode($errors ?? '[]', true);
 $success = ($success ?? 'false') == 'true';
 
 if ($success):
+
 ?>
     <p>vous recevrez un lien de réinitialisation.</p>
     <a href="/login">Retour à la connexion</a>
@@ -23,3 +33,7 @@ if ($success):
 
     <a href="/login">Retour à la connexion</a>
 <?php endif; ?>
+</div>
+
+</head>
+<body>

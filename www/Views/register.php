@@ -6,13 +6,9 @@
     <link rel="stylesheet" href="scss/register.scss">
 </head>
 <body>
-    
-    <?php
-$errors = json_decode($errors ?? '[]', true);
-$success = ($success ?? 'false') == 'true';
-?>
 
-<div class="login-container">
+<div class="register-container">
+
     <div class="logo-wrapper">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -23,54 +19,65 @@ $success = ($success ?? 'false') == 'true';
     <h1>S'inscrire</h1>
     <p class="subtitle">Créez votre compte Budgie</p>
 
-    <?php if ($success): ?>
-        <p>Inscription réussie ! Email de confirmation envoyé.</p>
-        <div class="footer-links">
-            <a href="/login">Retour à la connexion</a>
-        </div>
+<?php
+$errors = json_decode($errors ?? '[]', true);
+$success = ($success ?? 'false') == 'true';
+?>
 
-    <?php else: ?>
-        <?php if (!empty($errors)): ?>
-            <pre><?php print_r($errors); ?></pre>
-        <?php endif; ?>
+<?php if ($success): ?>
 
-            <form method="post">
+    <p>Inscription réussie ! Email de confirmation envoyé.</p>
 
-            <div class="form-row">
-                <div class="form-group">
-                <label for="firstname">Prénom</label>
-                <input type="text" id="firstname" name="firstname" required>
-                </div>
+    <div class="footer-links">
+        <a href="/login">Retour à la connexion</a>
+    </div>
 
-                <div class="form-group">
-                <label for="lastname">Nom</label>
-                <input type="text" id="lastname" name="lastname" required>
-                </div>
-            </div>
+<?php else: ?>
 
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-
-            <div class="form-group">
-                <label for="pwd">Mot de passe</label>
-                <input type="password" id="pwd" name="pwd" required minlength="8">
-            </div>
-
-            <div class="form-group">
-                <label for="pwdConfirm">Confirmer le mot de passe</label>
-                <input type="password" id="pwdConfirm" name="pwdConfirm" required minlength="8">
-            </div>
-
-            <button type="submit">S'inscrire</button>
-
-            </form>
-
-
-        <div class="footer-links">
-            <a href="/login">Déjà un compte ? Se connecter</a>
-        </div>
+    <?php if (!empty($errors)) : ?>
+        <pre><?php print_r($errors); ?></pre>
     <?php endif; ?>
 
+    <form method="post">
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="firstname">Prénom</label>
+                <input type="text" id="firstname" name="firstname" required>
+            </div>
+
+            <div class="form-group">
+                <label for="lastname">Nom</label>
+                <input type="text" id="lastname" name="lastname" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="form-group">
+            <label for="pwd">Mot de passe</label>
+            <input type="password" id="pwd" name="pwd" required minlength="8">
+        </div>
+
+        <div class="form-group">
+            <label for="pwdConfirm">Confirmer le mot de passe</label>
+            <input type="password" id="pwdConfirm" name="pwdConfirm" required minlength="8">
+        </div>
+
+        <button type="submit">S'inscrire</button>
+
+    </form>
+
+    <div class="footer-links">
+        <a href="/login">Déjà un compte ? Se connecter</a>
+    </div>
+
+<?php endif; ?>
+
 </div>
+
+</body>
+</html>

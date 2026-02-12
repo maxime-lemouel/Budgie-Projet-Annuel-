@@ -6,7 +6,14 @@
     <link rel="stylesheet" href="scss/login.scss">
 </head>
 <body>
-
+<?php
+$errors = json_decode($errors ?? '[]', true);
+if (!empty($errors)) {
+    echo "<pre>";
+    print_r($errors);
+    echo "</pre>";
+}
+?>
 <div class="login-container">
 
     <div class="logo-wrapper">
@@ -23,23 +30,25 @@
 
         <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="vous@example.com" required>
+            <input type="email" id="email" name="email" required>
         </div>
 
         <div class="form-group">
-            <label for="pwd">Mot de passe</label>
-            <input type="password" id="pwd" name="pwd" placeholder="••••••••" required>
+            <label for="password">Mot de passe</label>
+            <input type="password" id="password" name="password" placeholder="••••••••" required>
         </div>
 
         <button type="submit">Se connecter</button>
 
     </form>
 
+
     <div class="footer-links">
         <span>Pas encore de compte ?</span>
         <a href="/register">S'inscrire</a>
+        
     </div>
-
+<a href="/forgot-password">Mot de passe oublié ?</a><br>
 </div>
 
 </body>

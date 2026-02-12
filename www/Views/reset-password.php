@@ -2,20 +2,27 @@
 $errors = json_decode($errors ?? '[]', true);
 $success = ($success ?? 'false') == 'true';
 $token = $token ?? '';
-
-if ($success):
 ?>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Réinitialisation du mot de passe</title>
+    <link rel="stylesheet" href="scss/reset.scss">
+</head>
+<body>
+
+<?php if ($success): ?>
     <p>Mot de passe réinitialisé avec succès !</p>
     <a href="/login">Se connecter</a>
-<?php else:
+<?php else: 
     if (!empty($errors)) {
         echo "<pre>";
         print_r($errors);
         echo "</pre>";
     }
 
-    if (empty($token)):
-?>
+    if (empty($token)): ?>
         <p>Token manquant ou invalide.</p>
         <a href="/forgot-password">Demander un nouveau lien</a>
 <?php else: ?>
@@ -28,7 +35,8 @@ if ($success):
 
             <button type="submit">Réinitialiser</button>
         </form>
-<?php
-    endif;
-endif;
-?>
+<?php endif; 
+endif; ?>
+
+</body>
+</html>
