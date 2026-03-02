@@ -3,18 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Connexion</title>
-    <link rel="stylesheet" href="scss/login.scss">
+    <link rel="stylesheet" href="dist/css/login.css">
 </head>
 <body>
-<?php
-$errors = json_decode($errors ?? '[]', true);
-if (!empty($errors)) {
-    echo "<pre>";
-    print_r($errors);
-    echo "</pre>";
-}
-?>
-<div class="login-container">
+
+<div class="card card--auth">
 
     <div class="logo-wrapper">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -23,32 +16,46 @@ if (!empty($errors)) {
         </svg>
     </div>
 
-    <h1>Budgie</h1>
-    <p class="subtitle">Gérez vos finances en toute simplicité</p>
+    <div>
+        <h1 class="page-title">Budgie</h1>
+        <p class="page-subtitle">Gérez vos finances en toute simplicité</p>
+    </div>
 
-    <form method="post">
+    <?php
+    $errors = json_decode($errors ?? '[]', true);
+    if (!empty($errors)) :
+        foreach ($errors as $error) :?>
+
+        <div class="alert alert--error"><?php print_r($error); ?></div>
+    <?php endforeach;
+    endif; ?>
+
+    <form class="form" method="post">
 
         <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required>
+            <label class="form-label" for="email">Email</label>
+            <input class="input" type="email" id="email" name="email" required>
         </div>
 
         <div class="form-group">
-            <label for="password">Mot de passe</label>
-            <input type="password" id="password" name="password" placeholder="••••••••" required>
+            <label class="form-label" for="password">Mot de passe</label>
+            <input class="input" type="password" id="password" name="password" placeholder="••••••••" required>
         </div>
 
-        <button type="submit">Se connecter</button>
+        <button class="button button--full" type="submit">Se connecter</button>
 
     </form>
 
-
     <div class="footer-links">
         <span>Pas encore de compte ?</span>
-        <a href="/register">S'inscrire</a>
-        
+        <a href="/register" class="link">S'inscrire</a>
+        <br>
+        <br>
+        <a href="/forgot-password" class="link">Mot de passe oublié ?</a>
     </div>
-<a href="/forgot-password">Mot de passe oublié ?</a><br>
+
+
+
 </div>
 
 </body>
