@@ -1,0 +1,98 @@
+// ============================================================
+// COMPOSANT — Card
+// ============================================================
+@use "../partials/functions" as f;
+@use "../partials/variables" as v;
+
+@layer components {
+  .card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: f.rem(10);
+    width: f.rem(320);
+    padding: f.rem(20);
+    overflow: hidden;
+    background-color: var(--grey-50);
+    border-radius: f.rem(6);
+    border: solid thin var(--grey-200);
+
+    &__image {
+      max-width: unset;
+      width: f.rem(320);
+      aspect-ratio: 320/200;
+      object-fit: cover;
+      display: block;
+      margin-top: f.rem(-20);
+      margin-bottom: f.rem(10);
+      margin-inline: f.rem(-20);
+    }
+
+    &__title {
+      font-size: f.rem(20);
+      line-height: 1.2;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    &__text {
+      font-size: f.rem(16);
+      line-height: f.rem(24);
+      margin: 0;
+    }
+
+    &--dark {
+      background-color: var(--black);
+      color: var(--white);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      background-color: var(--black);
+      color: var(--white);
+    }
+
+    &--full {
+      position: relative;
+      padding-top: f.rem(220);
+
+      &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(0deg, var(--grey-50), transparent);
+      }
+
+      & > * { position: relative; z-index: 1; }
+
+      .card__image {
+        position: absolute;
+        z-index: 0;
+        inset: 0;
+        height: 100%;
+        width: 100%;
+        aspect-ratio: unset;
+        margin: unset;
+      }
+    }
+
+    &--auth {
+      width: 100%;
+      max-width: v.$auth-card-width-md;
+      padding: f.rem(24) f.rem(32);
+      border-radius: f.rem(28);
+      border: none;
+      box-shadow: v.$shadow-card-lg;
+      gap: f.rem(32);
+      text-align: center;
+      align-items: stretch;
+    }
+
+    &--auth-sm {
+      max-width: v.$auth-card-width-sm;
+      padding: f.rem(50) f.rem(40);
+      border-radius: f.rem(24);
+      box-shadow: v.$shadow-card-md;
+      gap: f.rem(28);
+    }
+  }
+}

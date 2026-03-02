@@ -1,0 +1,30 @@
+// ============================================================
+// COMPOSANT — Logo Wrapper
+// ============================================================
+@use "../partials/functions" as f;
+@use "../partials/variables" as v;
+@use "../partials/mixins" as m;
+
+@layer components {
+  .logo-wrapper {
+    background: var(--grey-200);
+    width: f.rem(76);
+    height: f.rem(76);
+    margin: 0 auto;
+    border-radius: v.$radius-2xl;
+    @include m.flex-center;
+
+    svg {
+      width: f.rem(34);
+      height: f.rem(34);
+      color: var(--black);
+    }
+
+    &--sm {
+      width: f.rem(70);
+      height: f.rem(70);
+
+      svg { width: f.rem(32); height: f.rem(32); }
+    }
+  }
+}

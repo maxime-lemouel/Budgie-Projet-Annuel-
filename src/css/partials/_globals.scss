@@ -1,0 +1,76 @@
+// ============================================================
+// GLOBALS — reset, custom properties et styles de base
+// ============================================================
+@use "variables" as v;
+@use "sass:color";
+
+@layer base {
+
+  :root {
+    --spacing: #{v.$spacing};
+
+    // Génère : --black, --black-hover, --blue, --blue-hover...
+    @each $name, $value in v.$colors {
+      --#{$name}: #{$value};
+      @if ($name == "black") {
+        --#{$name}-hover: #{color.scale($value, $lightness: 20%)};
+      } @else {
+        --#{$name}-hover: #{color.scale($value, $lightness: -20%)};
+      }
+    }
+
+    // Nuancier — génère --grey-50 à --grey-950, --blue-50 à --blue-950...
+    $shades: (
+      950: 12%,
+      900: 20%,
+      800: 28%,
+      700: 35%,
+      600: 50%,
+      500: 60%,
+      400: 71%,
+      300: 82%,
+      200: 90%,
+      100: 95%,
+       50: 97%,
+    );
+
+    @each $colorName, $colorValue in v.$colors {
+      @if ($colorName != "black" and $colorName != "white") {
+        $hue:        color.channel($colorValue, "hue", hsl);
+        $saturation: color.channel($colorValue, "saturation", hsl);
+        $lightness:  color.channel($colorValue, "lightness", hsl);
+        $previousShadeValue: 0%;
+
+        @each $shadeName, $shadeValue in $shades {
+          @if ($lightness > $previousShadeValue and $lightness < $shadeValue) {
+            --#{$colorName}-#{$shadeName}: hsl(#{$hue}, #{$saturation}, #{$lightness}); /* Original */
+          } @else {
+            --#{$colorName}-#{$shadeName}: hsl(#{$hue}, #{$saturation}, #{$shadeValue});
+          }
+          $previousShadeValue: $shadeValue;
+        }
+      }
+    }
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body {
+    height: 100%;
+  }
+
+  body {
+    font-family: v.$font-family;
+    color: var(--black);
+    background: var(--slate);
+  }
+
+  img {
+    max-width: 100%;
+    display: block;
+  }
+}

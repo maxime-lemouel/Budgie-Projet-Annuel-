@@ -1,0 +1,89 @@
+// ============================================================
+// VARIABLES — tokens de design centralisés
+// ============================================================
+
+// ============================================================
+// 1. MAP $colors — source unique de vérité pour les couleurs
+//
+// À partir de ces 6 couleurs, _globals.scss génère automatiquement :
+// - Les custom properties de base : var(--blue), var(--red)...
+// - Les variantes hover : var(--blue-hover), var(--black-hover)...
+// - Le nuancier complet : var(--blue-50) à var(--blue-950)...
+//
+// Dans les composants, on utilise UNIQUEMENT ces custom properties.
+// Correspondances utiles :
+//   var(--grey-50)   → fond card / fond input  (#f3f4f6)
+//   var(--grey-200)  → bordures                (#e5e7eb)
+//   var(--red-50)    → fond message erreur     (#fee2e2)
+// ============================================================
+$colors: (
+  "black": #0f172a,  // texte principal, fond bouton default
+  "white": #ffffff,  // fond input, fonds clairs
+  "grey":  #6b7280,  // texte secondaire (subtitle)
+  "blue":  #3b82f6,  // liens, bouton primary
+  "red":   #b91c1c,  // erreurs, bouton danger
+  "slate": #cfd6e4,  // fond body
+);
+
+// ============================================================
+// 2. VARIABLES SASS — uniquement pour ce qui ne peut pas
+//    être exprimé en custom property CSS :
+//    - box-shadow avec rgba()
+//    - valeurs utilisées dans des calculs Sass (@for, @each)
+//    - font-family (string)
+// ============================================================
+
+// Espacement de base (utilisé par _utilities.scss et _globals.scss)
+$spacing: 8px;
+
+// Breakpoints (utilisés par _container.scss et _grid.scss)
+$breakpoints: (
+  "sm":  640px,
+  "md":  768px,
+  "lg":  1024px,
+  "xl":  1280px,
+);
+
+// Typographie
+$font-family: 'Inter', sans-serif;
+
+$font-size-xs:   13px;
+$font-size-sm:   14px;
+$font-size-base: 15px;
+$font-size-md:   16px;
+$font-size-lg:   28px;
+$font-size-xl:   30px;
+
+// Espacements
+$spacing-xs:  8px;
+$spacing-sm:  12px;
+$spacing-md:  16px;
+$spacing-lg:  20px;
+$spacing-xl:  24px;
+$spacing-2xl: 32px;
+$spacing-3xl: 40px;
+$spacing-4xl: 48px;
+$spacing-5xl: 50px;
+
+// Border radius
+$radius-sm:   12px;
+$radius-md:   14px;
+$radius-lg:   16px;
+$radius-xl:   18px;
+$radius-2xl:  22px;
+$radius-3xl:  24px;
+$radius-4xl:  28px;
+
+// Ombres — rgba()
+$shadow-card-sm:     0 20px 40px rgba(0, 0, 0, 0.08);
+$shadow-card-md:     0 25px 50px rgba(0, 0, 0, 0.08);
+$shadow-card-lg:     0 30px 60px rgba(0, 0, 0, 0.08);
+$shadow-input-focus: 0 0 0 4px rgba(0, 0, 0, 0.04);
+
+// Transitions
+$transition-fast: 0.15s ease;
+$transition-base: 0.2s ease;
+
+// Tailles cards auth
+$auth-card-width-sm: 420px;
+$auth-card-width-md: 480px;

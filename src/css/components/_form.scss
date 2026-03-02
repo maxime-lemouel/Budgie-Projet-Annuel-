@@ -1,0 +1,63 @@
+// ============================================================
+// COMPOSANT — Form
+// ============================================================
+@use "../partials/functions" as f;
+@use "../partials/variables" as v;
+
+@layer components {
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: f.rem(22);
+    text-align: left;
+
+    &--compact { gap: f.rem(16); }
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: f.rem(8);
+  }
+
+  .form-row {
+    display: flex;
+    gap: f.rem(12);
+
+    .form-group { flex: 1; min-width: 0; }
+  }
+
+  .form-label {
+    display: block;
+    font-size: f.rem(13);
+    font-weight: 600;
+    color: var(--black);
+  }
+
+  .input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: f.rem(15) f.rem(18);
+    border-radius: v.$radius-lg;
+    border: 1px solid var(--grey-200);
+    background: var(--white);
+    font-family: v.$font-family;
+    font-size: f.rem(14);
+    color: var(--black);
+    transition: all v.$transition-base;
+    appearance: none;
+    -webkit-appearance: none;
+
+    &:focus {
+      outline: none;
+      border-color: var(--black);
+      box-shadow: v.$shadow-input-focus;
+    }
+
+    &--error {
+      border-color: var(--red);
+      background: var(--red-50);
+    }
+  }
+}

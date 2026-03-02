@@ -1,0 +1,41 @@
+@use "variables" as v;
+@layer utilities {
+  /* Spacing */
+  $suffixes: (
+    "t": "top",
+    "b": "bottom",
+    "r": "right",
+    "l": "left",
+  );
+  @for $i from 1 through 6 {
+    $value: calc($i * var(--spacing));
+    .m-#{$i} {
+      margin: $value;
+    }
+    .p-#{$i} {
+      padding: $value;
+    }
+    @each $suffix, $position in $suffixes {
+      .m#{$suffix}-#{$i} {
+        margin-#{$position}: $value;
+      }
+      .p#{$suffix}-#{$i} {
+        padding-#{$position}: $value;
+      }
+    }
+  }
+
+  /* Color */
+
+  @each $name, $value in v.$colors {
+    .bg-#{$name} {
+      background-color: var(--#{$name});
+    }
+    .color-#{$name} {
+      color: var(--#{$name});
+    }
+    .border-#{$name} {
+      border-color: var(--#{$name});
+    }
+  }
+}

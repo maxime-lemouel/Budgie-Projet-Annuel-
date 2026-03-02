@@ -1,0 +1,26 @@
+// ============================================================
+// MIXINS — blocs de styles réutilisables
+// ============================================================
+
+// Retire les styles par défaut d'un lien ou bouton
+@mixin resetLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+@mixin resetAll {
+  all: unset;
+}
+
+// Centre un élément en flexbox (utile pour body, logo-wrapper, etc.)
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+// Mise en page d'une page d'authentification (body centré sur toute la hauteur)
+@mixin auth-page {
+  min-height: 100vh;
+  @include flex-center;
+}

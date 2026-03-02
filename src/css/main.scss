@@ -1,0 +1,31 @@
+// ============================================================
+// PAGE — Reset Password
+// ============================================================
+@use "partials/globals";
+@use "partials/variables" as v;
+@use "partials/mixins"   as m;
+@use "partials/functions" as f;
+
+@use "components/card";
+@use "components/button";
+@use "components/form";
+@use "components/alert";
+@use "components/link";
+
+body {
+  @include m.auth-page;
+  background: var(--slate);
+  padding: f.rem(20);
+}
+
+.page-title {
+  font-size: v.$font-size-lg;
+  font-weight: 700;
+}
+
+.page-description {
+  font-size: v.$font-size-base;
+  color: var(--grey);
+  line-height: 1.5;
+  margin-top: 4px;
+}

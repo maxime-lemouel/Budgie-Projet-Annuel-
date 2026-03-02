@@ -1,0 +1,29 @@
+// ============================================================
+// COMPOSANT — Alert
+// ============================================================
+@use "../partials/functions" as f;
+@use "../partials/variables" as v;
+
+@layer components {
+  .alert {
+    padding: f.rem(14) f.rem(16);
+    border-radius: v.$radius-md;
+    font-size: f.rem(13);
+    line-height: 1.5;
+
+    &--error {
+      background: var(--red-50);
+      color: var(--red);
+    }
+
+    &--success {
+      background: var(--blue-50);
+      color: var(--blue-800);
+    }
+
+    &--info {
+      background: var(--blue-50);
+      color: var(--blue-700);
+    }
+  }
+}

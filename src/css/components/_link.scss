@@ -1,0 +1,32 @@
+// ============================================================
+// COMPOSANT — Link
+// ============================================================
+@use "../partials/functions" as f;
+@use "../partials/variables" as v;
+
+@layer components {
+
+  .link {
+    color: var(--black);
+    font-weight: 600;
+    font-size: f.rem(14);
+    text-decoration: none;
+    transition: color v.$transition-base;
+
+    &:hover { text-decoration: underline; }
+
+    &--blue {
+      color: var(--blue);
+      font-weight: 500;
+
+      &:hover { color: var(--blue-hover); }
+    }
+  }
+
+  .footer-links {
+    text-align: center;
+    font-size: f.rem(14);
+
+    span { color: var(--grey); }
+  }
+}

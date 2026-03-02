@@ -1,0 +1,12 @@
+// ============================================================
+// PARTIALS/INDEX — point d'entrée unique
+//
+// Grâce à @forward, n'importe quel fichier peut accéder à
+// tous les partials avec un seul @use '../partials' as p;
+// au lieu de faire un @use par fichier.
+// ============================================================
+
+@forward "variables";
+@forward "functions";
+@forward "mixins";
+@forward "globals";

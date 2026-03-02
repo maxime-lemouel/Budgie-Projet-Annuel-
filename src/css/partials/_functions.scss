@@ -1,0 +1,10 @@
+// ============================================================
+// FUNCTIONS — utilitaires de calcul
+// ============================================================
+@use "sass:math";
+
+// Convertit une valeur px en rem
+// Usage : f.rem(16) → 1rem
+@function rem($pxVal) {
+  @return math.div($pxVal, 16) * 1rem;
+}
