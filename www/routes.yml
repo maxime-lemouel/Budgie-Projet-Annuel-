@@ -76,3 +76,20 @@
 /test-db:
   controller: Base
   action: testDb
+
+
+/accounts:
+  controller: Compte
+  action: list
+
+/accounts/create:
+  controller: Compte
+  action: create
+
+/accounts/edit:
+  controller: Compte
+  action: edit
+
+/accounts/delete:
+  controller: Compte
+  action: delete

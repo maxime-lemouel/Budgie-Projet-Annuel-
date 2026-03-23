@@ -90,6 +90,7 @@ CREATE TABLE IF NOT EXISTS public.compte
     user_id integer NOT NULL,
     nom character varying(100) NOT NULL,
     description text,
+    type character varying(50) NOT NULL DEFAULT 'compte_courant', 
     date_creation date NOT NULL DEFAULT CURRENT_DATE,
     taux_remuneration numeric(5, 2),
     taux_imposition numeric(5, 2),
