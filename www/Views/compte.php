@@ -4,8 +4,8 @@ $errors   = json_decode($errors ?? '[]', true);
 $account  = isset($account)  ? json_decode($account, true)  : null;
 
 $typeLabels = [
-    'livret_a' => 'Livret A',
-    'compte_courant' => 'Compte courant'
+    'livret_a'       => 'Livret A',
+    'compte_courant' => 'Compte courant',
 ];
 ?>
 <!DOCTYPE html>
@@ -34,6 +34,7 @@ $typeLabels = [
 <body>
 
 <h1>Gestion des comptes</h1>
+
 <?php if (!empty($errors)) : ?>
     <?php foreach ($errors as $error) : ?>
         <div style="color:red;"><?= htmlspecialchars($error) ?></div>
@@ -78,7 +79,7 @@ $typeLabels = [
 
         <label>Type de compte</label><br>
         <select name="type">
-            <option value="livret_a" <?= ($account['type'] ?? '') === 'livret_a' ? 'selected' : '' ?>>Livret A</option>
+            <option value="livret_a"       <?= ($account['type'] ?? '') === 'livret_a'       ? 'selected' : '' ?>>Livret A</option>
             <option value="compte_courant" <?= ($account['type'] ?? '') === 'compte_courant' ? 'selected' : '' ?>>Compte courant</option>
         </select><br><br>
 
@@ -93,6 +94,7 @@ $typeLabels = [
     </form>
 
 <?php else: ?>
+
     <a href="/accounts/create"><button>+ Créer un compte</button></a>
     <hr>
 
@@ -110,32 +112,30 @@ $typeLabels = [
                 <th>Actions</th>
             </tr>
 
-            <?php foreach ($accounts as $acc): ?>
+            <?php foreach ($accounts as $compte): ?>
                 <tr>
-                    <td><?= htmlspecialchars($acc['nom'] ?? '') ?></td>
+                    <td><?= htmlspecialchars($compte['nom'] ?? '') ?></td>
+                    <td><?= htmlspecialchars($typeLabels[$compte['type']] ?? $compte['type']) ?></td>
+                    <td><?= htmlspecialchars($compte['description'] ?? '') ?></td>
                     <td>
-                        <?= htmlspecialchars($typeLabels[$acc['type']] ?? $acc['type']) ?>
-                    </td>
-
-                    <td><?= htmlspecialchars($acc['description'] ?? '') ?></td>
-                    <td>
-                        <?= $acc['taux_remuneration'] !== null
-                            ? number_format($acc['taux_remuneration'], 2) . ' %'
+                        <?php
+                        ?>
+                        <?= $compte['taux_remuneration'] !== null
+                            ? number_format($compte['taux_remuneration'], 2) . ' %'
                             : '-' ?>
                     </td>
-
                     <td>
-                        <?= $acc['taux_imposition'] !== null
-                            ? number_format($acc['taux_imposition'], 2) . ' %'
+                        <?php
+                        ?>
+                        <?= $compte['taux_imposition'] !== null
+                            ? number_format($compte['taux_imposition'], 2) . ' %'
                             : '-' ?>
                     </td>
-
-                    <td><?= htmlspecialchars($acc['date_creation'] ?? '') ?></td>
-
+                    <td><?= htmlspecialchars($compte['date_creation'] ?? '') ?></td>
                     <td>
-                        <a href="/accounts/edit?id=<?= $acc['id'] ?>">Modifier</a>
+                        <a href="/accounts/edit?id=<?= $compte['id'] ?>">Modifier</a>
                         &nbsp;
-                        <form method="POST" action="/accounts/delete?id=<?= $acc['id'] ?>" style="display:inline">
+                        <form method="POST" action="/accounts/delete?id=<?= $compte['id'] ?>" style="display:inline">
                             <button onclick="return confirm('Supprimer ?')">Supprimer</button>
                         </form>
                     </td>

@@ -13,16 +13,25 @@ class Compte
         $this->pdo = Database::getInstance()->getPdo();
     }
 
-    public function findAll(): array
+    /**
+     * Retourne uniquement les comptes appartenant à l'utilisateur connecté.
+     */
+    public function findAll(int $userId): array
     {
-        $stmt = $this->pdo->query('SELECT * FROM public.compte ORDER BY date_creation DESC');
+        $stmt = $this->pdo->prepare('SELECT * FROM public.compte WHERE user_id = :user_id ORDER BY date_creation DESC');
+        $stmt->execute(['user_id' => $userId]);
         return $stmt->fetchAll();
     }
 
-    public function findById(int $id): ?array
+    /**
+     * Requête tampon de sécurité : vérifie que le compte appartient bien à l'utilisateur
+     * avant toute modification ou suppression.
+     * Retourne null si le compte n'existe pas OU n'appartient pas à cet utilisateur.
+     */
+    public function findByIdAndUser(int $id, int $userId): ?array
     {
-        $stmt = $this->pdo->prepare('SELECT * FROM public.compte WHERE id = :id');
-        $stmt->execute(['id' => $id]);
+        $stmt = $this->pdo->prepare('SELECT * FROM public.compte WHERE id = :id AND user_id = :user_id');
+        $stmt->execute(['id' => $id, 'user_id' => $userId]);
         $result = $stmt->fetch();
         return $result ?: null;
     }
@@ -36,12 +45,12 @@ class Compte
                     RETURNING id';
 
             $stmt = $this->pdo->prepare($sql);
-            $stmt->bindValue(':user_id',            $data['user_id'], \PDO::PARAM_INT);
-            $stmt->bindValue(':nom',                $data['nom']);
-            $stmt->bindValue(':description',        $data['description'] ?? '');
-            $stmt->bindValue(':type',               $data['type']);
-            $stmt->bindValue(':taux_remuneration',  $data['taux_remuneration']);
-            $stmt->bindValue(':taux_imposition',    $data['taux_imposition']);
+            $stmt->bindValue(':user_id',           $data['user_id'],           \PDO::PARAM_INT);
+            $stmt->bindValue(':nom',               $data['nom']);
+            $stmt->bindValue(':description',       $data['description'] ?? '');
+            $stmt->bindValue(':type',              $data['type']);
+            $stmt->bindValue(':taux_remuneration', $data['taux_remuneration']);
+            $stmt->bindValue(':taux_imposition',   $data['taux_imposition']);
 
             $stmt->execute();
 
@@ -56,21 +65,21 @@ class Compte
     {
         try {
             $sql = 'UPDATE public.compte SET
-                        nom = :nom,
-                        description = :description,
-                        type = :type,
+                        nom               = :nom,
+                        description       = :description,
+                        type              = :type,
                         taux_remuneration = :taux_remuneration,
-                        taux_imposition = :taux_imposition,
-                        date_updated = CURRENT_DATE
+                        taux_imposition   = :taux_imposition,
+                        date_updated      = CURRENT_DATE
                     WHERE id = :id';
 
             $stmt = $this->pdo->prepare($sql);
-            $stmt->bindValue(':nom',                $data['nom']);
-            $stmt->bindValue(':description',        $data['description'] ?? '');
-            $stmt->bindValue(':type',               $data['type']);
-            $stmt->bindValue(':taux_remuneration',  $data['taux_remuneration']);
-            $stmt->bindValue(':taux_imposition',    $data['taux_imposition']);
-            $stmt->bindValue(':id',                 $id, \PDO::PARAM_INT);
+            $stmt->bindValue(':nom',               $data['nom']);
+            $stmt->bindValue(':description',       $data['description'] ?? '');
+            $stmt->bindValue(':type',              $data['type']);
+            $stmt->bindValue(':taux_remuneration', $data['taux_remuneration']);
+            $stmt->bindValue(':taux_imposition',   $data['taux_imposition']);
+            $stmt->bindValue(':id',                $id, \PDO::PARAM_INT);
 
             return $stmt->execute();
         } catch (\PDOException $e) {
