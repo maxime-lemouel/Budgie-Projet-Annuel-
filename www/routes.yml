@@ -93,3 +93,15 @@
 /accounts/delete:
   controller: Compte
   action: delete
+
+/expenses:
+  controller: Depense
+  action: list
+
+/expenses/create:
+  controller: Depense
+  action: create
+
+/expenses/delete:
+  controller: Depense
+  action: delete
