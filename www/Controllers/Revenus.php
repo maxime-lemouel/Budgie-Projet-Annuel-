@@ -1,0 +1,111 @@
+<?php
+
+namespace App\Controllers;
+
+use App\Core\Render;
+use App\Models\Revenu as RevenuModel;
+use App\Models\Compte as CompteModel;
+
+class Revenu
+{
+    private RevenuModel $revenuModel;
+    private CompteModel $compteModel;
+
+    public function __construct()
+    {
+        $this->revenuModel = new RevenuModel();
+        $this->compteModel = new CompteModel();
+    }
+
+    public function list(): void
+    {
+        Auth::requireAuth();
+
+        // seuls les revenus des comptes de l'utilisateur sont retournés
+        $revenus = $this->revenuModel->findAll($_SESSION['user_id']);
+
+        $render = new Render("revenu", "frontoffice");
+        $render->assign("revenus", json_encode($revenus));
+        $render->assign("errors",  json_encode([]));
+        $render->render();
+    }
+
+    public function create(): void
+    {
+        Auth::requireAuth();
+
+        $errors   = [];
+        $accounts = $this->compteModel->findAll($_SESSION['user_id']);
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            $data = [
+                'compte_id'   => isset($_POST['compte_id']) && $_POST['compte_id'] !== ''
+                                  ? (int) $_POST['compte_id'] : null,
+                'nom'         => trim($_POST['nom']         ?? ''),
+                'description' => trim($_POST['description'] ?? ''),
+                'date_debut'  => trim($_POST['date_debut']  ?? ''),
+                'date_fin'    => trim($_POST['date_fin']    ?? '') ?: null,
+                'montant'     => isset($_POST['montant']) && $_POST['montant'] !== ''
+                                  ? (float) $_POST['montant'] : null,
+            ];
+
+            // Validation
+            if (empty($data['compte_id']))
+                $errors[] = 'Le compte est obligatoire.';
+            if (empty($data['nom']))
+                $errors[] = 'Le nom est obligatoire.';
+            if ($data['montant'] === null)
+                $errors[] = 'Le montant est obligatoire.';
+            if ($data['montant'] !== null && $data['montant'] <= 0)
+                $errors[] = 'Le montant doit être positif.';
+            if (empty($data['date_debut']))
+                $errors[] = 'La date de début est obligatoire.';
+
+            // Sécurité : le compte_id soumis doit appartenir à l'utilisateur connecté.
+            if (!empty($data['compte_id'])) {
+                $comptesDeLUtilisateur = array_column($accounts, 'id');
+                if (!in_array($data['compte_id'], $comptesDeLUtilisateur, true)) {
+                    $errors[] = 'Le compte sélectionné est invalide.';
+                }
+            }
+
+            if (empty($errors)) {
+                $id = $this->revenuModel->create($data);
+
+                if ($id !== false) {
+                    header('Location: /revenues');
+                    exit;
+                } else {
+                    $errors[] = 'Erreur lors de la création du revenu.';
+                }
+            }
+        }
+
+        $render = new Render("revenu", "frontoffice");
+        $render->assign("accounts", json_encode($accounts));
+        $render->assign("errors",   json_encode($errors));
+        $render->render();
+    }
+
+    public function delete(): void
+    {
+        Auth::requireAuth();
+
+        $id = isset($_GET['id']) ? (int) $_GET['id'] : null;
+
+        if (!$id) {
+            header('Location: /revenues');
+            exit;
+        }
+
+        if (!$this->revenuModel->belongsToUser($id, $_SESSION['user_id'])) {
+            header('Location: /revenues');
+            exit;
+        }
+
+        $this->revenuModel->delete($id);
+        header('Location: /revenues');
+        exit;
+    }
+}
