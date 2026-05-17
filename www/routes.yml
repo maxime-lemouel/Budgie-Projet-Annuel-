@@ -105,3 +105,15 @@
 /expenses/delete:
   controller: Depense
   action: delete
+
+/revenues:
+  controller: Revenu
+  action: list
+
+/revenues/create:
+  controller: Revenu
+  action: create
+
+/revenues/delete:
+  controller: Revenu
+  action: delete
