@@ -13,12 +13,16 @@ class Revenu
         $this->pdo = Database::getInstance()->getPdo();
     }
 
+    /**
+     * Retourne uniquement les revenus liés aux comptes de l'utilisateur connecté.
+     */
     public function findAll(int $userId): array
     {
         $stmt = $this->pdo->prepare(
-            'SELECT r.*, c.nom AS compte_nom
+            'SELECT r.*, c.nom AS compte_nom, dr.ponctuelle, dr.iteration
              FROM public.revenus r
              JOIN public.compte c ON c.id = r.compte_id
+             LEFT JOIN public.duree_revenus dr ON dr.revenus_id = r.id
              WHERE c.user_id = :user_id
              ORDER BY r.date_debut DESC'
         );
@@ -29,9 +33,10 @@ class Revenu
     public function findById(int $id): ?array
     {
         $stmt = $this->pdo->prepare(
-            'SELECT r.*, c.nom AS compte_nom
+            'SELECT r.*, c.nom AS compte_nom, dr.ponctuelle, dr.iteration
              FROM public.revenus r
              JOIN public.compte c ON c.id = r.compte_id
+             LEFT JOIN public.duree_revenus dr ON dr.revenus_id = r.id
              WHERE r.id = :id'
         );
         $stmt->execute(['id' => $id]);
@@ -54,9 +59,11 @@ class Revenu
     public function findByCompte(int $compteId): array
     {
         $stmt = $this->pdo->prepare(
-            'SELECT * FROM public.revenus
-             WHERE compte_id = :compte_id
-             ORDER BY date_debut DESC'
+            'SELECT r.*, dr.ponctuelle, dr.iteration
+             FROM public.revenus r
+             LEFT JOIN public.duree_revenus dr ON dr.revenus_id = r.id
+             WHERE r.compte_id = :compte_id
+             ORDER BY r.date_debut DESC'
         );
         $stmt->execute(['compte_id' => $compteId]);
         return $stmt->fetchAll();
@@ -65,6 +72,8 @@ class Revenu
     public function create(array $data): int|false
     {
         try {
+            $this->pdo->beginTransaction();
+
             $sql = 'INSERT INTO public.revenus
                         (compte_id, nom, description, date_debut, date_fin, montant, date_updated)
                     VALUES
@@ -80,9 +89,22 @@ class Revenu
             $stmt->bindValue(':montant',     $data['montant']);
             $stmt->execute();
 
-            return (int) $stmt->fetchColumn();
+            $revenuId = (int) $stmt->fetchColumn();
+
+            $sqlDuree = 'INSERT INTO public.duree_revenus (revenus_id, ponctuelle, iteration)
+                         VALUES (:revenus_id, :ponctuelle, :iteration)';
+
+            $stmtDuree = $this->pdo->prepare($sqlDuree);
+            $stmtDuree->bindValue(':revenus_id', $revenuId,           \PDO::PARAM_INT);
+            $stmtDuree->bindValue(':ponctuelle', $data['ponctuelle'],  \PDO::PARAM_BOOL);
+            $stmtDuree->bindValue(':iteration',  $data['iteration'] ?: null);
+            $stmtDuree->execute();
+
+            $this->pdo->commit();
+            return $revenuId;
 
         } catch (\PDOException $e) {
+            $this->pdo->rollBack();
             error_log("Erreur création revenu : " . $e->getMessage());
             return false;
         }
@@ -91,6 +113,7 @@ class Revenu
     public function delete(int $id): bool
     {
         try {
+            // duree_revenus sera supprimé automatiquement grâce au ON DELETE CASCADE
             $stmt = $this->pdo->prepare('DELETE FROM public.revenus WHERE id = :id');
             return $stmt->execute(['id' => $id]);
         } catch (\PDOException $e) {

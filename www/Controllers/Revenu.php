@@ -21,7 +21,6 @@ class Revenu
     {
         Auth::requireAuth();
 
-        // seuls les revenus des comptes de l'utilisateur sont retournés
         $revenus = $this->revenuModel->findAll($_SESSION['user_id']);
 
         $render = new Render("revenu", "frontoffice");
@@ -39,6 +38,11 @@ class Revenu
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+            $ponctuelle = ($_POST['frequence'] ?? '') === 'ponctuelle';
+
+            $iteration = (!$ponctuelle && isset($_POST['iteration']) && $_POST['iteration'] !== '')
+                         ? (int) $_POST['iteration'] : null;
+
             $data = [
                 'compte_id'   => isset($_POST['compte_id']) && $_POST['compte_id'] !== ''
                                   ? (int) $_POST['compte_id'] : null,
@@ -48,9 +52,10 @@ class Revenu
                 'date_fin'    => trim($_POST['date_fin']    ?? '') ?: null,
                 'montant'     => isset($_POST['montant']) && $_POST['montant'] !== ''
                                   ? (float) $_POST['montant'] : null,
+                'ponctuelle'  => $ponctuelle,
+                'iteration'   => $iteration,
             ];
 
-            // Validation
             if (empty($data['compte_id']))
                 $errors[] = 'Le compte est obligatoire.';
             if (empty($data['nom']))
@@ -61,8 +66,9 @@ class Revenu
                 $errors[] = 'Le montant doit être positif.';
             if (empty($data['date_debut']))
                 $errors[] = 'La date de début est obligatoire.';
+            if (!$ponctuelle && ($iteration === null || $iteration < 1))
+                $errors[] = 'Le nombre de mois doit être supérieur à 0.';
 
-            // Sécurité : le compte_id soumis doit appartenir à l'utilisateur connecté.
             if (!empty($data['compte_id'])) {
                 $comptesDeLUtilisateur = array_column($accounts, 'id');
                 if (!in_array($data['compte_id'], $comptesDeLUtilisateur, true)) {
