@@ -102,6 +102,10 @@
   controller: Depense
   action: create
 
+/expenses/edit:
+  controller: Depense
+  action: edit 
+
 /expenses/delete:
   controller: Depense
   action: delete

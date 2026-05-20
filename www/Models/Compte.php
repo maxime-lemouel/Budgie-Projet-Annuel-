@@ -24,7 +24,7 @@ class Compte
     }
 
     /**
-     * Requête tampon de sécurité : vérifie que le compte appartient bien à l'utilisateur
+     * Aspect sécurité : vérifie que le compte appartient bien à l'utilisateur
      * avant toute modification ou suppression.
      * Retourne null si le compte n'existe pas OU n'appartient pas à cet utilisateur.
      */
