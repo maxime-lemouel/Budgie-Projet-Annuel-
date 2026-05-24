@@ -3,7 +3,11 @@ $revenus  = isset($revenus)  ? json_decode($revenus,  true) : [];
 $errors   = json_decode($errors ?? '[]', true);
 $accounts = isset($accounts) ? json_decode($accounts, true) : [];
 
-$isCreate = str_starts_with($_SERVER['REQUEST_URI'], '/revenues/create');
+$revenu = isset($revenu) ? json_decode($revenu, true) : null;
+$uri    = $_SERVER['REQUEST_URI'];
+
+$isCreate = str_starts_with($uri, '/revenues/create');
+$isEdit   = str_starts_with($uri, '/revenues/edit');
 
 $selectedFrequence = $_POST['frequence'] ?? 'mois';
 ?>
@@ -143,6 +147,122 @@ $selectedFrequence = $_POST['frequence'] ?? 'mois';
         toggleIteration();
     </script>
 
+<?php elseif ($isEdit && $revenu) : ?>
+
+    <h2>Modifier le revenu</h2>
+    <form method="POST" action="/revenues/edit?id=<?= (int)$revenu['id'] ?>">
+
+        <div style="display:flex; gap:16px;">
+            <div style="flex:1;">
+                <label for="nom">Nom court *</label><br>
+                <input type="text"
+                       name="nom"
+                       id="nom"
+                       value="<?= htmlspecialchars($revenu['nom'] ?? '') ?>"
+                       placeholder="Ex: Salaire"
+                       required>
+            </div>
+            <div style="flex:1;">
+                <label for="montant">Montant (€) *</label><br>
+                <input type="number"
+                       step="0.01"
+                       min="0.01"
+                       name="montant"
+                       id="montant"
+                       value="<?= htmlspecialchars($revenu['montant'] ?? '0') ?>"
+                       required>
+            </div>
+        </div>
+        <br>
+
+        <div>
+            <label for="description">Description</label><br>
+            <textarea name="description"
+                      id="description"
+                      rows="4"
+                      style="width:100%;"><?= htmlspecialchars($revenu['description'] ?? '') ?></textarea>
+        </div>
+        <br>
+
+        <div style="display:flex; gap:16px;">
+            <div style="flex:1;">
+                <label for="compte_id">Compte *</label><br>
+                <select name="compte_id" id="compte_id" required>
+                    <option value="">Sélectionner</option>
+                    <?php foreach ($accounts as $account) : ?>
+                        <option value="<?= $account['id'] ?>"
+                            <?= (int)($revenu['compte_id'] ?? 0) === $account['id'] ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($account['nom']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div style="flex:1;">
+                <?php $freq = ($revenu['ponctuelle'] ?? false) ? 'ponctuelle' : 'mois'; ?>
+                <label for="frequence">Fréquence *</label><br>
+                <select name="frequence" id="frequence" required>
+                    <option value="mois"       <?= $freq === 'mois'       ? 'selected' : '' ?>>Tous les N mois</option>
+                    <option value="ponctuelle" <?= $freq === 'ponctuelle' ? 'selected' : '' ?>>Ponctuelle (une seule fois)</option>
+                </select>
+            </div>
+        </div>
+        <br>
+
+        <div id="iteration_block">
+            <label for="iteration">Tous les N mois</label><br>
+            <input type="number"
+                   name="iteration"
+                   id="iteration"
+                   min="1"
+                   value="<?= htmlspecialchars($revenu['iteration'] ?? '1') ?>">
+        </div>
+        <br>
+
+        <div style="display:flex; gap:16px;">
+            <div style="flex:1;">
+                <label for="date_debut">Date de début *</label><br>
+                <input type="date"
+                       name="date_debut"
+                       id="date_debut"
+                       value="<?= htmlspecialchars(substr($revenu['date_debut'] ?? '', 0, 10)) ?>"
+                       required>
+            </div>
+            <div style="flex:1;">
+                <label for="date_fin">Date de fin</label><br>
+                <input type="date"
+                       name="date_fin"
+                       id="date_fin"
+                       value="<?= htmlspecialchars(substr($revenu['date_fin'] ?? '', 0, 10)) ?>">
+            </div>
+        </div>
+        <br>
+
+        <div style="display:flex; justify-content:flex-end; gap:8px;">
+            <a href="/revenues"><button type="button">Annuler</button></a>
+            <button type="submit">Enregistrer</button>
+        </div>
+
+    </form>
+
+    <script>
+        const selectFrequence = document.getElementById('frequence');
+        const iterationBlock  = document.getElementById('iteration_block');
+        const iterationInput  = document.getElementById('iteration');
+
+        function toggleIteration() {
+            const isMois = selectFrequence.value === 'mois';
+            iterationBlock.style.display = isMois ? 'block' : 'none';
+            if (isMois) {
+                iterationInput.setAttribute('required', 'required');
+            } else {
+                iterationInput.removeAttribute('required');
+            }
+        }
+
+        selectFrequence.addEventListener('change', toggleIteration);
+        toggleIteration();
+    </script>
+
 <?php else : ?>
 
     <a href="/revenues/create"><button>+ Créer un revenu</button></a>
@@ -174,6 +294,9 @@ $selectedFrequence = $_POST['frequence'] ?? 'mois';
                     <td><?= htmlspecialchars(substr($rev['date_debut'], 0, 10)) ?></td>
                     <td><?= $rev['date_fin'] ? htmlspecialchars(substr($rev['date_fin'], 0, 10)) : '-' ?></td>
                     <td>
+                        <a href="/revenues/edit?id=<?= (int)$rev['id'] ?>">
+                            <button type="button">Modifier</button>
+                        </a>
                         <form method="POST" action="/revenues/delete?id=<?= $rev['id'] ?>" style="display:inline">
                             <button onclick="return confirm('Supprimer ce revenu ?')">Supprimer</button>
                         </form>

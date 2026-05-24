@@ -121,3 +121,7 @@
 /revenues/delete:
   controller: Revenu
   action: delete
+
+/revenues/edit:
+  controller: Revenu
+  action: edit
