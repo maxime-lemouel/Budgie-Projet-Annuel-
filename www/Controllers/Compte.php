@@ -18,7 +18,6 @@ class Compte
     {
         Auth::requireAuth();
 
-        //filtre les comptes par l'utilisateur connecté
         $accounts = $this->compteModel->findAll($_SESSION['user_id']);
 
         $render = new Render("compte", "frontoffice");
@@ -34,13 +33,19 @@ class Compte
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+            $type = trim($_POST['type'] ?? '');
+
+            // Si "autre" est sélectionné, on stocke directement la valeur saisie dans type
+            if ($type === 'autre') {
+                $type = strip_tags(trim($_POST['type_autre'] ?? ''));
+            }
+
             $data = [
-                //strip_tags() supprime toute balise HTML/JS pour éviter les injections
                 'nom'               => strip_tags(trim($_POST['nom'] ?? '')),
                 'description'       => strip_tags(trim($_POST['description'] ?? '')),
-                'type'              => trim($_POST['type'] ?? ''),
-                'taux_remuneration' => $_POST['taux_remuneration'] !== '' ? (float) $_POST['taux_remuneration'] : null,
-                'taux_imposition'   => $_POST['taux_imposition']   !== '' ? (float) $_POST['taux_imposition']   : null,
+                'type'              => $type,
+                'taux_remuneration' => $_POST['taux_remuneration'] !== '' ? (float) $_POST['taux_remuneration'] : (float) 0,
+                'taux_imposition'   => $_POST['taux_imposition']   !== '' ? (float) $_POST['taux_imposition']   : (float) 0,
                 'user_id'           => $_SESSION['user_id'] ?? 1,
             ];
 
@@ -60,7 +65,9 @@ class Compte
             }
         }
 
+        $accounts = $this->compteModel->findAll($_SESSION['user_id']);
         $render = new Render("compte", "frontoffice");
+        $render->assign("accounts", json_encode($accounts));
         $render->assign("errors", json_encode($errors));
         $render->render();
     }
@@ -77,8 +84,6 @@ class Compte
             exit;
         }
 
-        //on vérifie que ce compte appartient bien à l'utilisateur connecté.
-        // sipas le cas, findByIdAndUser() retourne null et on redirige.
         $account = $this->compteModel->findByIdAndUser($id, $userId);
 
         if (!$account) {
@@ -90,14 +95,19 @@ class Compte
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+            $type = trim($_POST['type'] ?? '');
+
+            // Si "autre" est sélectionné, on stocke directement la valeur saisie dans type
+            if ($type === 'autre') {
+                $type = strip_tags(trim($_POST['type_autre'] ?? ''));
+            }
+
             $data = [
-                //strip_tags() supprime toute balise HTML/JS pour éviter les injections
                 'nom'               => strip_tags(trim($_POST['nom'] ?? '')),
                 'description'       => strip_tags(trim($_POST['description'] ?? '')),
-                'type'              => trim($_POST['type'] ?? ''),
-                //si le champ est vide on stocke null en BDD sinon cast en float
-                'taux_remuneration' => $_POST['taux_remuneration'] !== '' ? (float) $_POST['taux_remuneration'] : null,
-                'taux_imposition'   => $_POST['taux_imposition']   !== '' ? (float) $_POST['taux_imposition']   : null,
+                'type'              => $type,
+                'taux_remuneration' => $_POST['taux_remuneration'] !== '' ? (float) $_POST['taux_remuneration'] : (float) 0,
+                'taux_imposition'   => $_POST['taux_imposition']   !== '' ? (float) $_POST['taux_imposition']   : (float) 0,
                 'user_id'           => $userId,
             ];
 
@@ -117,7 +127,9 @@ class Compte
             }
         }
 
+        $accounts = $this->compteModel->findAll($userId);
         $render = new Render("compte", "frontoffice");
+        $render->assign("accounts", json_encode($accounts));
         $render->assign("account", json_encode($account));
         $render->assign("errors", json_encode($errors));
         $render->render();
@@ -135,8 +147,6 @@ class Compte
             exit;
         }
 
-        //vérifie que ce compte appartient bien à l'utilisateur connecté
-        //avant de le supprimer. Empêche qu'un utilisateur supprime le compte d'un autre.
         $account = $this->compteModel->findByIdAndUser($id, $userId);
 
         if (!$account) {

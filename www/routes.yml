@@ -6,14 +6,6 @@
   controller: Base
   action: contact
 
-/portfolio:
-  controller: Base
-  action: portfolio
-
-/pages:
-  controller: Pages
-  action: list
-
 # Routes d'authentification
 /login:
   controller: Auth
@@ -54,22 +46,6 @@
 
 /admin/users/delete:
   controller: AdminUsers
-  action: delete
-
-/admin/pages:
-  controller: AdminPages
-  action: list
-
-/admin/pages/create:
-  controller: AdminPages
-  action: create
-
-/admin/pages/edit:
-  controller: AdminPages
-  action: edit
-
-/admin/pages/delete:
-  controller: AdminPages
   action: delete
 
 # Route de test
@@ -125,3 +101,7 @@
 /revenues/edit:
   controller: Revenu
   action: edit
+
+/forecast:
+  controller: Forecast
+  action: list

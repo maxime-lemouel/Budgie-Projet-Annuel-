@@ -22,9 +22,11 @@ class Revenu
         Auth::requireAuth();
 
         $revenus = $this->revenuModel->findAllByUser($_SESSION['user_id']);
+        $accounts = $this->compteModel->findAll($_SESSION['user_id']);
 
         $render = new Render("revenu", "frontoffice");
         $render->assign("revenus", json_encode($revenus));
+        $render->assign("accounts", json_encode($accounts));
         $render->assign("errors",  json_encode([]));
         $render->render();
     }

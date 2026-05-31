@@ -8,9 +8,28 @@ class Compte
 {
     private \PDO $pdo;
 
+    /**
+     * Types de comptes gérés nativement par l'application.
+     * Tout type absent de cette liste est considéré comme "autre"
+     * et sa valeur est le libellé saisi par l'utilisateur.
+     */
+    private const TYPES_CONNUS = ['livret_a', 'compte_courant'];
+
     public function __construct()
     {
         $this->pdo = Database::getInstance()->getPdo();
+    }
+
+    /**
+     * Normalise un compte brut issu de la base.
+     * Ajoute is_autre et type_autre pour que la vue
+     * n'ait pas à connaître la logique des types.
+     */
+    private function normalize(array $compte): array
+    {
+        $compte['is_autre']   = !in_array($compte['type'], self::TYPES_CONNUS, true);
+        $compte['type_autre'] = $compte['is_autre'] ? $compte['type'] : null;
+        return $compte;
     }
 
     /**
@@ -18,9 +37,12 @@ class Compte
      */
     public function findAll(int $userId): array
     {
-        $stmt = $this->pdo->prepare('SELECT * FROM public.compte WHERE user_id = :user_id ORDER BY date_creation DESC');
+        $stmt = $this->pdo->prepare(
+            'SELECT * FROM public.compte WHERE user_id = :user_id ORDER BY date_creation DESC'
+        );
         $stmt->execute(['user_id' => $userId]);
-        return $stmt->fetchAll();
+
+        return array_map([$this, 'normalize'], $stmt->fetchAll());
     }
 
     /**
@@ -30,22 +52,26 @@ class Compte
      */
     public function findByIdAndUser(int $id, int $userId): ?array
     {
-        $stmt = $this->pdo->prepare('SELECT * FROM public.compte WHERE id = :id AND user_id = :user_id');
+        $stmt = $this->pdo->prepare(
+            'SELECT * FROM public.compte WHERE id = :id AND user_id = :user_id'
+        );
         $stmt->execute(['id' => $id, 'user_id' => $userId]);
         $result = $stmt->fetch();
-        return $result ?: null;
+
+        return $result ? $this->normalize($result) : null;
     }
 
     public function create(array $data): int|false
     {
         try {
-            $sql = 'INSERT INTO public.compte 
-                    (user_id, nom, description, type, taux_remuneration, taux_imposition) 
-                    VALUES (:user_id, :nom, :description, :type, :taux_remuneration, :taux_imposition) 
+            $sql = 'INSERT INTO public.compte
+                        (user_id, nom, description, type, taux_remuneration, taux_imposition)
+                    VALUES
+                        (:user_id, :nom, :description, :type, :taux_remuneration, :taux_imposition)
                     RETURNING id';
 
             $stmt = $this->pdo->prepare($sql);
-            $stmt->bindValue(':user_id',           $data['user_id'],           \PDO::PARAM_INT);
+            $stmt->bindValue(':user_id',           $data['user_id'], \PDO::PARAM_INT);
             $stmt->bindValue(':nom',               $data['nom']);
             $stmt->bindValue(':description',       $data['description'] ?? '');
             $stmt->bindValue(':type',              $data['type']);

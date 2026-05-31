@@ -2,311 +2,305 @@
 $revenus  = isset($revenus)  ? json_decode($revenus,  true) : [];
 $errors   = json_decode($errors ?? '[]', true);
 $accounts = isset($accounts) ? json_decode($accounts, true) : [];
+$revenu   = isset($revenu)   ? json_decode($revenu,   true) : null;
 
-$revenu = isset($revenu) ? json_decode($revenu, true) : null;
-$uri    = $_SERVER['REQUEST_URI'];
-
-$isCreate = str_starts_with($uri, '/revenues/create');
-$isEdit   = str_starts_with($uri, '/revenues/edit');
-
-$selectedFrequence = $_POST['frequence'] ?? 'mois';
+$autoOpen = $revenu !== null || !empty($errors);
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Revenus</title>
-</head>
-<body>
 
-<h1>Gestion des revenus</h1>
+<div class="page-heading">
+    <div class="page-heading__text">
+        <h1 class="page-heading__title">Revenus</h1>
+        <p class="page-heading__subtitle">Suivez et gérez vos revenus récurrents</p>
+    </div>
+    <button class="button button--primary" data-modal-open="modal-revenu" data-modal-mode="create">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.7" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+        </svg>
+        Nouveau revenu
+    </button>
+</div>
 
-<?php if (!empty($errors)) : ?>
-    <?php foreach ($errors as $error) : ?>
-        <div style="color:red;"><?= htmlspecialchars($error) ?></div>
-    <?php endforeach; ?>
-<?php endif; ?>
+<div class="card card--table">
 
-<?php if ($isCreate) : ?>
+    <?php if (empty($revenus)): ?>
 
-    <h2>Nouveau revenu</h2>
-    <form method="POST" action="/revenues/create">
-
-        <div style="display:flex; gap:16px;">
-            <div style="flex:1;">
-                <label for="nom">Nom court *</label><br>
-                <input type="text"
-                       name="nom"
-                       id="nom"
-                       value="<?= htmlspecialchars($_POST['nom'] ?? '') ?>"
-                       placeholder="Ex: Salaire"
-                       required>
-            </div>
-            <div style="flex:1;">
-                <label for="montant">Montant (€) *</label><br>
-                <input type="number"
-                       step="0.01"
-                       min="0.01"
-                       name="montant"
-                       id="montant"
-                       value="<?= htmlspecialchars($_POST['montant'] ?? '0') ?>"
-                       required>
-            </div>
-        </div>
-        <br>
-
-        <div>
-            <label for="description">Description</label><br>
-            <textarea name="description"
-                      id="description"
-                      rows="4"
-                      style="width:100%;"><?= htmlspecialchars($_POST['description'] ?? '') ?></textarea>
-        </div>
-        <br>
-
-        <div style="display:flex; gap:16px;">
-            <div style="flex:1;">
-                <label for="compte_id">Compte *</label><br>
-                <select name="compte_id" id="compte_id" required>
-                    <option value="">Sélectionner</option>
-                    <?php foreach ($accounts as $account) : ?>
-                        <option value="<?= $account['id'] ?>"
-                            <?= (isset($_POST['compte_id']) && (int)$_POST['compte_id'] === $account['id']) ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($account['nom']) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div style="flex:1;">
-                <label for="frequence">Fréquence *</label><br>
-                <select name="frequence" id="frequence" required>
-                    <option value="mois" <?= $selectedFrequence === 'mois' ? 'selected' : '' ?>>
-                        Tous les N mois
-                    </option>
-                    <option value="ponctuelle" <?= $selectedFrequence === 'ponctuelle' ? 'selected' : '' ?>>
-                        Ponctuelle (une seule fois)
-                    </option>
-                </select>
-            </div>
-        </div>
-        <br>
-
-        <div id="iteration_block">
-            <label for="iteration">Tous les N mois</label><br>
-            <input type="number"
-                   name="iteration"
-                   id="iteration"
-                   min="1"
-                   value="<?= htmlspecialchars($_POST['iteration'] ?? '1') ?>"
-                   required>
-        </div>
-        <br>
-
-        <div style="display:flex; gap:16px;">
-            <div style="flex:1;">
-                <label for="date_debut">Date de début *</label><br>
-                <input type="date"
-                       name="date_debut"
-                       id="date_debut"
-                       value="<?= htmlspecialchars($_POST['date_debut'] ?? date('Y-m-d')) ?>"
-                       required>
-            </div>
-            <div style="flex:1;">
-                <label for="date_fin">Date de fin</label><br>
-                <input type="date"
-                       name="date_fin"
-                       id="date_fin"
-                       value="<?= htmlspecialchars($_POST['date_fin'] ?? '') ?>">
-            </div>
-        </div>
-        <br>
-
-        <div style="display:flex; justify-content:flex-end; gap:8px;">
-            <a href="/revenues"><button type="button">Annuler</button></a>
-            <button type="submit">Créer</button>
+        <div class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.3" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 19.5V4.5m0 0l-5 5m5-5l5 5"/>
+            </svg>
+            <div class="empty-state__title">Aucun revenu</div>
+            <div class="empty-state__desc">Commencez par créer votre premier revenu.</div>
+            <button class="button button--primary" data-modal-open="modal-revenu" data-modal-mode="create" style="margin-top:8px;">
+                Créer un revenu
+            </button>
         </div>
 
-    </form>
+    <?php else: ?>
 
-    <script>
-        const selectFrequence = document.getElementById('frequence');
-        const iterationBlock  = document.getElementById('iteration_block');
-        const iterationInput  = document.getElementById('iteration');
-
-        function toggleIteration() {
-            const isMois = selectFrequence.value === 'mois';
-            iterationBlock.style.display = isMois ? 'block' : 'none';
-            if (isMois) {
-                iterationInput.setAttribute('required', 'required');
-            } else {
-                iterationInput.removeAttribute('required');
-            }
-        }
-
-        selectFrequence.addEventListener('change', toggleIteration);
-        toggleIteration();
-    </script>
-
-<?php elseif ($isEdit && $revenu) : ?>
-
-    <h2>Modifier le revenu</h2>
-    <form method="POST" action="/revenues/edit?id=<?= (int)$revenu['id'] ?>">
-
-        <div style="display:flex; gap:16px;">
-            <div style="flex:1;">
-                <label for="nom">Nom court *</label><br>
-                <input type="text"
-                       name="nom"
-                       id="nom"
-                       value="<?= htmlspecialchars($revenu['nom'] ?? '') ?>"
-                       placeholder="Ex: Salaire"
-                       required>
-            </div>
-            <div style="flex:1;">
-                <label for="montant">Montant (€) *</label><br>
-                <input type="number"
-                       step="0.01"
-                       min="0.01"
-                       name="montant"
-                       id="montant"
-                       value="<?= htmlspecialchars($revenu['montant'] ?? '0') ?>"
-                       required>
-            </div>
-        </div>
-        <br>
-
-        <div>
-            <label for="description">Description</label><br>
-            <textarea name="description"
-                      id="description"
-                      rows="4"
-                      style="width:100%;"><?= htmlspecialchars($revenu['description'] ?? '') ?></textarea>
-        </div>
-        <br>
-
-        <div style="display:flex; gap:16px;">
-            <div style="flex:1;">
-                <label for="compte_id">Compte *</label><br>
-                <select name="compte_id" id="compte_id" required>
-                    <option value="">Sélectionner</option>
-                    <?php foreach ($accounts as $account) : ?>
-                        <option value="<?= $account['id'] ?>"
-                            <?= (int)($revenu['compte_id'] ?? 0) === $account['id'] ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($account['nom']) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div style="flex:1;">
-                <?php $freq = ($revenu['ponctuelle'] ?? false) ? 'ponctuelle' : 'mois'; ?>
-                <label for="frequence">Fréquence *</label><br>
-                <select name="frequence" id="frequence" required>
-                    <option value="mois"       <?= $freq === 'mois'       ? 'selected' : '' ?>>Tous les N mois</option>
-                    <option value="ponctuelle" <?= $freq === 'ponctuelle' ? 'selected' : '' ?>>Ponctuelle (une seule fois)</option>
-                </select>
-            </div>
-        </div>
-        <br>
-
-        <div id="iteration_block">
-            <label for="iteration">Tous les N mois</label><br>
-            <input type="number"
-                   name="iteration"
-                   id="iteration"
-                   min="1"
-                   value="<?= htmlspecialchars($revenu['iteration'] ?? '1') ?>">
-        </div>
-        <br>
-
-        <div style="display:flex; gap:16px;">
-            <div style="flex:1;">
-                <label for="date_debut">Date de début *</label><br>
-                <input type="date"
-                       name="date_debut"
-                       id="date_debut"
-                       value="<?= htmlspecialchars(substr($revenu['date_debut'] ?? '', 0, 10)) ?>"
-                       required>
-            </div>
-            <div style="flex:1;">
-                <label for="date_fin">Date de fin</label><br>
-                <input type="date"
-                       name="date_fin"
-                       id="date_fin"
-                       value="<?= htmlspecialchars(substr($revenu['date_fin'] ?? '', 0, 10)) ?>">
-            </div>
-        </div>
-        <br>
-
-        <div style="display:flex; justify-content:flex-end; gap:8px;">
-            <a href="/revenues"><button type="button">Annuler</button></a>
-            <button type="submit">Enregistrer</button>
-        </div>
-
-    </form>
-
-    <script>
-        const selectFrequence = document.getElementById('frequence');
-        const iterationBlock  = document.getElementById('iteration_block');
-        const iterationInput  = document.getElementById('iteration');
-
-        function toggleIteration() {
-            const isMois = selectFrequence.value === 'mois';
-            iterationBlock.style.display = isMois ? 'block' : 'none';
-            if (isMois) {
-                iterationInput.setAttribute('required', 'required');
-            } else {
-                iterationInput.removeAttribute('required');
-            }
-        }
-
-        selectFrequence.addEventListener('change', toggleIteration);
-        toggleIteration();
-    </script>
-
-<?php else : ?>
-
-    <a href="/revenues/create"><button>+ Créer un revenu</button></a>
-    <hr>
-
-    <?php if (empty($revenus)) : ?>
-        <p>Aucun revenu enregistré.</p>
-    <?php else : ?>
-        <table>
-            <tr>
-                <th>Compte</th>
-                <th>Nom</th>
-                <th>Montant</th>
-                <th>Fréquence</th>
-                <th>Date début</th>
-                <th>Date fin</th>
-                <th>Actions</th>
-            </tr>
-            <?php foreach ($revenus as $rev) : ?>
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
                 <tr>
-                    <td><?= htmlspecialchars($rev['compte_nom'] ?? '') ?></td>
-                    <td><?= htmlspecialchars($rev['nom'] ?? '') ?></td>
-                    <td><?= number_format($rev['montant'], 2) ?> €</td>
-                    <td>
-                        <?= $rev['ponctuelle']
-                            ? 'Ponctuelle'
-                            : 'Tous les ' . (int)$rev['iteration'] . ' mois' ?>
-                    </td>
-                    <td><?= htmlspecialchars(substr($rev['date_debut'], 0, 10)) ?></td>
-                    <td><?= $rev['date_fin'] ? htmlspecialchars(substr($rev['date_fin'], 0, 10)) : '-' ?></td>
-                    <td>
-                        <a href="/revenues/edit?id=<?= (int)$rev['id'] ?>">
-                            <button type="button">Modifier</button>
-                        </a>
-                        <form method="POST" action="/revenues/delete?id=<?= $rev['id'] ?>" style="display:inline">
-                            <button onclick="return confirm('Supprimer ce revenu ?')">Supprimer</button>
-                        </form>
-                    </td>
+                    <th>Compte</th>
+                    <th>Nom</th>
+                    <th class="col--nowrap">Montant</th>
+                    <th>Fréquence</th>
+                    <th class="col--nowrap">Date début</th>
+                    <th class="col--nowrap">Date fin</th>
+                    <th class="col--shrink">Actions</th>
                 </tr>
-            <?php endforeach; ?>
-        </table>
+                </thead>
+                <tbody>
+                <?php foreach ($revenus as $rev): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($rev['compte_nom'] ?? '') ?></td>
+                        <td style="font-weight:500;"><?= htmlspecialchars($rev['nom'] ?? '') ?></td>
+                        <td class="col--nowrap">
+                            <strong><?= number_format((float)$rev['montant'], 2) ?> €</strong>
+                        </td>
+                        <td>
+                            <?php if ($rev['ponctuelle']): ?>
+                                <span class="badge badge--grey">Ponctuelle</span>
+                            <?php else: ?>
+                                <span class="badge badge--blue">/ <?= (int)$rev['iteration'] ?> mois</span>
+                            <?php endif; ?>
+                        </td>
+                        <td class="col--nowrap"><?= htmlspecialchars(substr($rev['date_debut'] ?? '', 0, 10)) ?></td>
+                        <td class="col--nowrap"><?= $rev['date_fin'] ? htmlspecialchars(substr($rev['date_fin'], 0, 10)) : '—' ?></td>
+                        <td class="col--shrink" style="white-space:nowrap;">
+                            <button class="button button--ghost button--sm"
+                                    data-modal-open="modal-revenu"
+                                    data-modal-mode="edit"
+                                    data-id="<?= $rev['id'] ?>"
+                                    data-nom="<?= htmlspecialchars($rev['nom'] ?? '', ENT_QUOTES) ?>"
+                                    data-description="<?= htmlspecialchars($rev['description'] ?? '', ENT_QUOTES) ?>"
+                                    data-compte-id="<?= $rev['compte_id'] ?>"
+                                    data-montant="<?= htmlspecialchars($rev['montant'] ?? '', ENT_QUOTES) ?>"
+                                    data-frequence="<?= $rev['ponctuelle'] ? 'ponctuelle' : 'mois' ?>"
+                                    data-iteration="<?= htmlspecialchars($rev['iteration'] ?? '', ENT_QUOTES) ?>"
+                                    data-date-debut="<?= htmlspecialchars(substr($rev['date_debut'] ?? '', 0, 10), ENT_QUOTES) ?>"
+                                    data-date-fin="<?= htmlspecialchars(substr($rev['date_fin'] ?? '', 0, 10), ENT_QUOTES) ?>">
+                                Modifier
+                            </button>
+                            <form method="POST" action="/revenues/delete?id=<?= $rev['id'] ?>"
+                                  onsubmit="return confirm('Supprimer ce revenu ?')">
+                                <button class="button button--danger button--sm" type="submit">Supprimer</button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+
     <?php endif; ?>
 
-<?php endif; ?>
+</div>
 
-</body>
-</html>
+
+<!-- ── Modal création / modification ──────────────────────── -->
+<dialog id="modal-revenu" <?= $autoOpen ? 'data-modal-auto' : '' ?>>
+    <div class="modal">
+
+        <div class="modal__header">
+            <div>
+                <div class="modal__title" id="modal-revenu-title">
+                    <?= $revenu ? 'Modifier le revenu' : 'Nouveau revenu' ?>
+                </div>
+                <div class="modal__subtitle" id="modal-revenu-subtitle">
+                    <?= $revenu ? 'Mettez à jour les informations' : 'Renseignez les informations du revenu' ?>
+                </div>
+            </div>
+            <button class="modal__close" data-modal-close aria-label="Fermer">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        <form id="modal-revenu-form"
+              method="POST"
+              action="<?= $revenu ? '/revenues/edit?id=' . $revenu['id'] : '/revenues/create' ?>">
+
+            <div class="modal__body">
+
+                <?php if (!empty($errors)): ?>
+                    <?php foreach ($errors as $err): ?>
+                        <div class="alert alert--error"><?= htmlspecialchars($err) ?></div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="rev-nom">Nom court *</label>
+                        <input class="form-control" type="text" name="nom" id="rev-nom"
+                               placeholder="Ex : Salaire"
+                               value="<?= htmlspecialchars($revenu['nom'] ?? '') ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="rev-montant">Montant (€) *</label>
+                        <input class="form-control" type="number" step="0.01" min="0.01"
+                               name="montant" id="rev-montant"
+                               value="<?= htmlspecialchars($revenu['montant'] ?? '') ?>"
+                               placeholder="0.00" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="rev-description">Description</label>
+                    <textarea class="form-control" name="description" id="rev-description"
+                              placeholder="Description optionnelle..."><?= htmlspecialchars($revenu['description'] ?? '') ?></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="rev-compte-id">Compte *</label>
+                        <select class="form-control" name="compte_id" id="rev-compte-id" required>
+                            <option value="">Sélectionner un compte</option>
+                            <?php foreach ($accounts as $account): ?>
+                                <option value="<?= $account['id'] ?>"
+                                        <?= isset($revenu['compte_id']) && (int)$revenu['compte_id'] === (int)$account['id'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($account['nom']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="rev-frequence">Fréquence *</label>
+                        <select class="form-control" name="frequence" id="rev-frequence">
+                            <option value="mois"       <?= isset($revenu['ponctuelle']) && !$revenu['ponctuelle'] ? 'selected' : '' ?>>Tous les N mois</option>
+                            <option value="ponctuelle" <?= isset($revenu['ponctuelle']) &&  $revenu['ponctuelle'] ? 'selected' : '' ?>>Ponctuelle</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="rev-iteration-block">
+                    <div class="form-group">
+                        <label class="form-label" for="rev-iteration">Tous les N mois</label>
+                        <input class="form-control" type="number" name="iteration" id="rev-iteration"
+                               min="1" value="<?= htmlspecialchars((string)($revenu['iteration'] ?? '1')) ?>"
+                               style="max-width:120px;">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="rev-date-debut">Date de début *</label>
+                        <input class="form-control" type="date" name="date_debut" id="rev-date-debut"
+                               value="<?= htmlspecialchars(substr($revenu['date_debut'] ?? date('Y-m-d'), 0, 10)) ?>" required>
+                    </div>
+                    <div class="form-group" id="rev-date-fin-group">
+                        <label class="form-label" for="rev-date-fin">Date de fin</label>
+                        <input class="form-control" type="date" name="date_fin" id="rev-date-fin"
+                               value="<?= htmlspecialchars(substr($revenu['date_fin'] ?? '', 0, 10)) ?>">
+                        <p class="modal__subtitle">Sans date de fin, le revenu sera répété indéfiniment.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal__footer">
+                <button type="button" class="button button--ghost" data-modal-close>Annuler</button>
+                <button type="submit" class="button button--primary" id="modal-revenu-submit">
+                    <?= $revenu ? 'Enregistrer' : 'Créer le revenu' ?>
+                </button>
+            </div>
+
+        </form>
+    </div>
+</dialog>
+
+<script>
+    (function () {
+        var form     = document.getElementById('modal-revenu-form');
+        var title    = document.getElementById('modal-revenu-title');
+        var subtitle = document.getElementById('modal-revenu-subtitle');
+        var submit   = document.getElementById('modal-revenu-submit');
+
+        var fields = {
+            nom:         document.getElementById('rev-nom'),
+            description: document.getElementById('rev-description'),
+            compteId:    document.getElementById('rev-compte-id'),
+            montant:     document.getElementById('rev-montant'),
+            frequence:   document.getElementById('rev-frequence'),
+            iteration:   document.getElementById('rev-iteration'),
+            dateDebut:   document.getElementById('rev-date-debut'),
+            dateFin:     document.getElementById('rev-date-fin'),
+        };
+
+        var iterBlock  = document.getElementById('rev-iteration-block');
+        var dateFinGrp = document.getElementById('rev-date-fin-group');
+
+        function toggleFrequence() {
+            var isMois = fields.frequence.value === 'mois';
+
+            // Bloc "N mois" : visible uniquement en mode récurrent
+            iterBlock.style.display = isMois ? '' : 'none';
+            isMois ? fields.iteration.setAttribute('required', '') : fields.iteration.removeAttribute('required');
+
+            // Bloc "date de fin" : masqué en mode ponctuel
+            dateFinGrp.style.display = isMois ? '' : 'none';
+            if (!isMois) {
+                fields.dateFin.value = '';
+            }
+        }
+
+        fields.frequence.addEventListener('change', toggleFrequence);
+        toggleFrequence();
+
+        function resetToCreate() {
+            form.action          = '/revenues/create';
+            title.textContent    = 'Nouveau revenu';
+            subtitle.textContent = 'Renseignez les informations du revenu';
+            submit.textContent   = 'Créer le revenu';
+            fields.nom.value         = '';
+            fields.description.value = '';
+            fields.compteId.value    = '';
+            fields.montant.value     = '';
+            fields.frequence.value   = 'mois';
+            fields.iteration.value   = '1';
+            fields.dateDebut.value   = '';
+            fields.dateFin.value     = '';
+            toggleFrequence();
+        }
+
+        function fillForEdit(data) {
+            form.action          = '/revenues/edit?id=' + data.id;
+            title.textContent    = 'Modifier le revenu';
+            subtitle.textContent = 'Mettez à jour les informations';
+            submit.textContent   = 'Enregistrer';
+            fields.nom.value         = data.nom         || '';
+            fields.description.value = data.description || '';
+            fields.compteId.value    = data.compteId    || '';
+            fields.montant.value     = data.montant      || '';
+            fields.frequence.value   = data.frequence   || 'mois';
+            fields.iteration.value   = data.iteration   || '1';
+            fields.dateDebut.value   = data.dateDebut   || '';
+            fields.dateFin.value     = data.dateFin     || '';
+            toggleFrequence();
+        }
+
+        document.querySelectorAll('[data-modal-open="modal-revenu"]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                if (btn.dataset.modalMode === 'edit') {
+                    fillForEdit({
+                        id:          btn.dataset.id,
+                        nom:         btn.dataset.nom,
+                        description: btn.dataset.description,
+                        compteId:    btn.dataset.compteId,
+                        montant:     btn.dataset.montant,
+                        frequence:   btn.dataset.frequence,
+                        iteration:   btn.dataset.iteration,
+                        dateDebut:   btn.dataset.dateDebut,
+                        dateFin:     btn.dataset.dateFin,
+                    });
+                } else {
+                    <?php if (!$revenu && empty($errors)): ?>
+                    resetToCreate();
+                    <?php endif; ?>
+                }
+            });
+        });
+
+    }());
+</script>

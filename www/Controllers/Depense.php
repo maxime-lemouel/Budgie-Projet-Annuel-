@@ -22,9 +22,11 @@ class Depense
         Auth::requireAuth();
 
         $depenses = $this->depenseModel->findAllByUser($_SESSION['user_id']);
+        $accounts = $this->compteModel->findAll($_SESSION['user_id']);
 
         $render = new Render("depense", "frontoffice");
         $render->assign("depenses", json_encode($depenses));
+        $render->assign("accounts", json_encode($accounts));
         $render->assign("errors",   json_encode([]));
         $render->render();
     }
@@ -170,8 +172,8 @@ public function edit(): void
     $render->assign("errors",   json_encode($errors));
     $render->render();
 }
-   
-    
+
+
     public function delete(): void
     {
         Auth::requireAuth();
@@ -189,7 +191,7 @@ public function edit(): void
             header('Location: /expenses');
             exit;
         }
-        
+
         $this->depenseModel->delete($id);
         header('Location: /expenses');
         exit;

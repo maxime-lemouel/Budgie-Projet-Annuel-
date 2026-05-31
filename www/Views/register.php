@@ -1,15 +1,6 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Inscription</title>
-    <link rel="stylesheet" href="dist/css/register.css">
-</head>
-<body>
-
 <?php
-$errors  = json_decode($errors ?? '[]', true);
-$success = ($success ?? 'false') == 'true';
+$errors = json_decode($errors ?? '[]', true);
+$success = ($success ?? 'false') === 'true';
 ?>
 
 <div class="card card--auth">
@@ -26,25 +17,20 @@ $success = ($success ?? 'false') == 'true';
         <p class="page-subtitle">Créez votre compte Budgie</p>
     </div>
 
-    <?php if ($success) : ?>
+    <?php if ($success): ?>
 
         <div class="alert alert--success">Inscription réussie ! Email de confirmation envoyé.</div>
-
-        <p class="footer-links">
+        <div class="footer-links">
             <a href="/login" class="link link--blue">Retour à la connexion</a>
-        </p>
+        </div>
 
-    <?php else : ?>
+    <?php else: ?>
 
-        <?php if (!empty($errors)) :
-            foreach ($errors as $error) :?>
-
-                <div class="alert alert--error"><?php print_r($error); ?></div>
-            <?php endforeach;
-        endif; ?>
+        <?php foreach ($errors as $error): ?>
+            <div class="alert alert--error"><?= htmlspecialchars($error) ?></div>
+        <?php endforeach; ?>
 
         <form class="form form--compact" method="post">
-
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label" for="firstname">Prénom</label>
@@ -55,34 +41,28 @@ $success = ($success ?? 'false') == 'true';
                     <input class="input" type="text" id="lastname" name="lastname" required>
                 </div>
             </div>
-
             <div class="form-group">
                 <label class="form-label" for="email">Email</label>
                 <input class="input" type="email" id="email" name="email" required>
             </div>
-
             <div class="form-group">
                 <label class="form-label" for="pwd">Mot de passe</label>
                 <input class="input" type="password" id="pwd" name="pwd" required minlength="8">
             </div>
-
             <div class="form-group">
                 <label class="form-label" for="pwdConfirm">Confirmer le mot de passe</label>
                 <input class="input" type="password" id="pwdConfirm" name="pwdConfirm" required minlength="8">
             </div>
-
             <button class="button button--primary button--full" type="submit">S'inscrire</button>
-
         </form>
 
-        <p class="footer-links">
+        <div class="footer-links">
             <span>Déjà un compte ?</span>
             <a href="/login" class="link">Se connecter</a>
-        </p>
+            <br><br>
+            <a href="/contact" class="link link--blue">Nous contacter</a>
+        </div>
 
     <?php endif; ?>
 
 </div>
-
-</body>
-</html>

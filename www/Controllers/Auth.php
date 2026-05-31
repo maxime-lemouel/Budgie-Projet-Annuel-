@@ -129,7 +129,7 @@ class Auth
             }
         }
 
-        $render = new Render("register", "frontoffice");
+        $render = new Render("register", "auth");
         $render->assign("errors", json_encode($errors));
         $render->assign("success", $success ? "true" : "false");
         $render->render();
@@ -155,7 +155,7 @@ class Auth
             }
         }
 
-        $render = new Render("validate", "frontoffice");
+        $render = new Render("validate", "auth");
         $render->assign("success", $success ? "true" : "false");
         $render->assign("message", $message);
         $render->render();
@@ -203,7 +203,7 @@ class Auth
             }
         }
 
-        $render = new Render("login", "frontoffice");
+        $render = new Render("login", "auth");
         $render->assign("errors", json_encode($errors));
         $render->render();
     }
@@ -255,7 +255,7 @@ class Auth
             }
         }
 
-        $render = new Render("forgot-password", "frontoffice");
+        $render = new Render("forgot-password", "auth");
         $render->assign("errors", json_encode($errors));
         $render->assign("success", $success ? "true" : "false");
         $render->render();
@@ -304,7 +304,7 @@ class Auth
             }
         }
 
-        $render = new Render("reset-password", "frontoffice");
+        $render = new Render("reset-password", "auth");
         $render->assign("token", $token);
         $render->assign("errors", json_encode($errors));
         $render->assign("success", $success ? "true" : "false");

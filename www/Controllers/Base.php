@@ -29,7 +29,11 @@ class Base
      */
     public function contact(): void
     {
-        $render = new Render("contact", "frontoffice");
+        $isLoggedIn = isset($_SESSION['user_id']);
+        $template = $isLoggedIn ? "frontoffice" : "auth";
+
+        $render = new Render("contact", $template);
+        $render->assign("isLoggedIn", $isLoggedIn ? "true" : "false");
         $render->render();
     }
 
@@ -47,7 +51,7 @@ class Base
      */
     public function testDb(): void
     {
-    \App\Controllers\Auth::requireAdmin();
+        \App\Controllers\Auth::requireAdmin();
         try {
             $db = \App\Core\Database::getInstance();
             $pdo = $db->getPdo();

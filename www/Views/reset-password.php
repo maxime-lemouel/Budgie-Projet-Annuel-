@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Réinitialisation du mot de passe</title>
-    <link rel="stylesheet" href="dist/css/reset.css">
+    <link rel="stylesheet" href="dist/css/main.css">
 </head>
 <body>
 
 <?php
-$errors  = json_decode($errors ?? '[]', true);
+$errors = json_decode($errors ?? '[]', true);
 $success = ($success ?? 'false') == 'true';
-$token   = $token ?? '';
+$token = $token ?? '';
 ?>
 
 <div class="card card--auth card--auth-sm">

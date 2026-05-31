@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Connexion</title>
-    <link rel="stylesheet" href="dist/css/login.css">
-</head>
-<body>
+<?php $errors = json_decode($errors ?? '[]', true); ?>
 
 <div class="card card--auth">
 
@@ -21,42 +14,27 @@
         <p class="page-subtitle">Gérez vos finances en toute simplicité</p>
     </div>
 
-    <?php
-    $errors = json_decode($errors ?? '[]', true);
-    if (!empty($errors)) :
-        foreach ($errors as $error) :?>
-
-        <div class="alert alert--error"><?php print_r($error); ?></div>
-    <?php endforeach;
-    endif; ?>
+    <?php foreach ($errors as $error): ?>
+        <div class="alert alert--error"><?= htmlspecialchars($error) ?></div>
+    <?php endforeach; ?>
 
     <form class="form" method="post">
-
         <div class="form-group">
             <label class="form-label" for="email">Email</label>
             <input class="input" type="email" id="email" name="email" required>
         </div>
-
         <div class="form-group">
             <label class="form-label" for="password">Mot de passe</label>
             <input class="input" type="password" id="password" name="password" placeholder="••••••••" required>
         </div>
-
         <button class="button button--full" type="submit">Se connecter</button>
-
     </form>
 
     <div class="footer-links">
         <span>Pas encore de compte ?</span>
         <a href="/register" class="link">S'inscrire</a>
-        <br>
-        <br>
-        <a href="/forgot-password" class="link">Mot de passe oublié ?</a>
+        <br><br>
+        <a href="/forgot-password" class="link link--blue">Mot de passe oublié ?</a>
     </div>
 
-
-
 </div>
-
-</body>
-</html>
