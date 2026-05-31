@@ -1,0 +1,126 @@
+// ============================================================
+// COMPOSANT — Data Table
+// ============================================================
+@use "../partials/functions" as f;
+@use "../partials/variables" as v;
+
+@layer components {
+  .table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: v.$radius-sm;
+
+    @media (max-width: #{v.$bp-md}) {
+      background-image: linear-gradient(to right, transparent 85%, var(--grey-200) 100%);
+      background-attachment: local;
+    }
+  }
+
+  .data-table {
+    width: 100%;
+    min-width: f.rem(600);
+    border-collapse: collapse;
+    font-size: f.rem(13.5);
+
+    th {
+      text-align: left;
+      padding: f.rem(10) f.rem(14);
+      font-size: f.rem(11.5);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--grey-500);
+      border-bottom: 1px solid var(--grey-200);
+      background: var(--grey-50);
+      white-space: nowrap;
+
+      &:first-child {
+        border-radius: v.$radius-sm 0 0 0;
+      }
+
+      &:last-child {
+        border-radius: 0 v.$radius-sm 0 0;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        background: var(--grey-950);
+        border-color: var(--grey-800);
+        color: var(--grey-500);
+      }
+    }
+
+    td {
+      padding: f.rem(11) f.rem(14);
+      border-bottom: 1px solid var(--grey-100);
+      color: var(--black);
+      vertical-align: middle;
+      min-width: f.rem(80);
+
+      @media (prefers-color-scheme: dark) {
+        border-color: var(--grey-800);
+        color: var(--grey-200);
+      }
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: var(--grey-50);
+
+      @media (prefers-color-scheme: dark) {
+        background: var(--grey-900);
+      }
+    }
+
+    .col--shrink {
+      width: 1%;
+      white-space: nowrap;
+    }
+
+    .col--nowrap {
+      white-space: nowrap;
+    }
+
+    .col--mono {
+      font-family: "Courier New", Courier, monospace;
+      font-size: f.rem(12);
+    }
+
+    .col--muted {
+      color: var(--grey-500);
+    }
+  }
+
+  .card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: f.rem(12);
+    padding: f.rem(16) f.rem(20);
+    border-bottom: 1px solid var(--grey-100);
+    flex-shrink: 0;
+
+    @media (prefers-color-scheme: dark) {
+      border-color: var(--grey-800);
+    }
+  }
+
+  .card__title {
+    font-size: f.rem(15);
+    font-weight: 600;
+    color: var(--black);
+
+    @media (prefers-color-scheme: dark) {
+      color: var(--white);
+    }
+  }
+
+  .card__subtitle {
+    font-size: f.rem(12);
+    color: var(--grey-500);
+    margin-top: f.rem(2);
+  }
+}

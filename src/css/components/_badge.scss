@@ -1,0 +1,30 @@
+// ============================================================
+// COMPOSANT — Badge
+// ============================================================
+@use "../partials/functions" as f;
+@use "../partials/variables" as v;
+
+@layer components {
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: f.rem(2) f.rem(8);
+    border-radius: 999px;
+    font-size: f.rem(11.5);
+    font-weight: 600;
+    white-space: nowrap;
+
+    &--blue  { background: var(--blue-100);  color: var(--blue-700);  }
+    &--green { background: var(--green-100); color: var(--green-700); }
+    &--red   { background: var(--red-100);   color: var(--red-700);   }
+    &--grey  { background: var(--grey-100);  color: var(--grey-700);  }
+
+    @media (prefers-color-scheme: dark) {
+      &--blue  { background: var(--blue-900);  color: var(--blue-400);  }
+      &--green { background: var(--green-900); color: var(--green-400); }
+      &--red   { background: var(--red-900);   color: var(--red-400);   }
+      &--grey  { background: var(--grey-900);  color: var(--grey-400);  }
+    }
+  }
+}

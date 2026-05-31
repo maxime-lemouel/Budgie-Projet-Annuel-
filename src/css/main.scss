@@ -1,15 +1,17 @@
 // ============================================================
-// PAGE — Reset Password
+// PAGES AUTH — Login / Register / Forgot / Reset / Validate
+// Compilé : dist/css/main.css
 // ============================================================
 @use "partials/globals";
 @use "partials/variables" as v;
-@use "partials/mixins"   as m;
+@use "partials/mixins"    as m;
 @use "partials/functions" as f;
 
 @use "components/card";
 @use "components/button";
 @use "components/form";
 @use "components/alert";
+@use "components/logo";
 @use "components/link";
 
 body {
@@ -19,13 +21,26 @@ body {
 }
 
 .page-title {
-  font-size: v.$font-size-lg;
+  font-size: v.$font-size-xl;
   font-weight: 700;
 }
 
+.page-subtitle,
 .page-description {
   font-size: v.$font-size-base;
   color: var(--grey);
-  line-height: 1.5;
   margin-top: 4px;
+}
+
+.page-description { line-height: 1.5; }
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: var(--slate-950);
+    color: var(--white);
+  }
+
+  .page-title     { color: var(--white); }
+  .page-subtitle,
+  .page-description { color: var(--grey-500); }
 }

@@ -1,0 +1,158 @@
+// ============================================================
+// COMPOSANT — Modal
+// ============================================================
+@use "../partials/functions" as f;
+@use "../partials/variables" as v;
+
+@layer components {
+
+  dialog::backdrop {
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    animation: backdrop-in v.$transition-base forwards;
+  }
+
+  @keyframes backdrop-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  dialog {
+    border: none;
+    padding: 0;
+    background: transparent;
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: calc(100% - f.rem(32));
+    max-width: f.rem(560);
+    max-height: calc(100vh - f.rem(48));
+    overflow-y: auto;
+    animation: modal-in v.$transition-base forwards;
+
+    @media (max-width: #{v.$bp-sm}) {
+      width: 100%;
+      max-width: 100%;
+      max-height: 90vh;
+      margin: auto auto 0;
+      border-radius: v.$radius-3xl v.$radius-3xl 0 0;
+    }
+  }
+
+  @keyframes modal-in {
+    from {
+      opacity: 0;
+      transform: translateY(f.rem(-12)) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .modal {
+    background: var(--white);
+    border-radius: v.$radius-3xl;
+    box-shadow: v.$shadow-card-lg;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    @media (prefers-color-scheme: dark) {
+      background: var(--grey-900);
+      border: 1px solid var(--grey-800);
+    }
+
+    @media (max-width: #{v.$bp-sm}) {
+      border-radius: v.$radius-3xl v.$radius-3xl 0 0;
+    }
+  }
+
+  .modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: f.rem(12);
+    padding: f.rem(20) f.rem(24) f.rem(16);
+    border-bottom: 1px solid var(--grey-100);
+    flex-shrink: 0;
+
+    @media (prefers-color-scheme: dark) {
+      border-color: var(--grey-800);
+    }
+  }
+
+  .modal__title {
+    font-size: f.rem(17);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--black);
+
+    @media (prefers-color-scheme: dark) { color: var(--white); }
+  }
+
+  .modal__subtitle {
+    font-size: f.rem(13);
+    color: var(--grey-500);
+    margin-top: f.rem(2);
+  }
+
+  .modal__close {
+    all: unset;
+    box-sizing: border-box;
+    width: f.rem(32);
+    height: f.rem(32);
+    border-radius: 50%;
+    background: var(--grey-100);
+    color: var(--grey-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background v.$transition-fast, color v.$transition-fast;
+
+    svg { width: f.rem(16); height: f.rem(16); display: block; }
+
+    &:hover { background: var(--grey-200); color: var(--black); }
+    &:focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 2px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      background: var(--grey-800);
+      color: var(--grey-400);
+      &:hover { background: var(--grey-700); color: var(--white); }
+    }
+  }
+
+  .modal__body {
+    padding: f.rem(20) f.rem(24);
+    display: flex;
+    flex-direction: column;
+    gap: f.rem(18);
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  .modal__footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: f.rem(8);
+    padding: f.rem(16) f.rem(24) f.rem(20);
+    border-top: 1px solid var(--grey-100);
+    flex-shrink: 0;
+
+    @media (prefers-color-scheme: dark) {
+      border-color: var(--grey-800);
+    }
+
+    @media (max-width: #{v.$bp-sm}) {
+      flex-direction: column-reverse;
+      align-items: stretch;
+    }
+  }
+}

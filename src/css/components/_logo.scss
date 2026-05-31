@@ -24,7 +24,18 @@
       width: f.rem(70);
       height: f.rem(70);
 
-      svg { width: f.rem(32); height: f.rem(32); }
+      svg {
+        width: f.rem(32);
+        height: f.rem(32);
+      }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      background: var(--grey-800);
+
+      svg {
+        color: var(--white);
+      }
     }
   }
 }

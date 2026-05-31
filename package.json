@@ -7,9 +7,13 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "watch": "sass --watch src/css/main.scss dist/css/main.css"
+    "watch": "concurrently \"npm run watch:main\" \"npm run watch:app\" \"npm run watch:admin\"",
+    "watch:main": "sass --watch src/css/main.scss dist/css/main.css",
+    "watch:app": "sass --watch src/css/app.scss dist/css/app.css",
+    "watch:admin": "sass --watch src/css/admin.scss dist/css/admin.css"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "sass": "^1.97.3"
   }
 }

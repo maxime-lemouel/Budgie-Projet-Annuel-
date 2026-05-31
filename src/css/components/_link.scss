@@ -21,6 +21,10 @@
 
       &:hover { color: var(--blue-hover); }
     }
+
+    @media (prefers-color-scheme: dark) {
+      color: var(--white);
+    }
   }
 
   .footer-links {

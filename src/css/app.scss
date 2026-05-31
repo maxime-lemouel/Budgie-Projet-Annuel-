@@ -1,0 +1,30 @@
+// ============================================================
+// APP — Frontoffice (dashboard, comptes, dépenses, contact)
+// Compilé : dist/css/app.css
+// ============================================================
+@use "partials/globals";
+@use "partials/variables" as v;
+@use "partials/mixins"    as m;
+@use "partials/functions" as f;
+
+@use "components/button";
+@use "components/sidebar";
+@use "components/app_layout";
+@use "components/card";
+
+@use "components/badge";
+@use "components/form";
+@use "components/alert";
+@use "components/data_table";
+@use "components/modal";
+
+body {
+  font-family: v.$font-family;
+  color: var(--black);
+  background: var(--grey-50);
+
+  @media (prefers-color-scheme: dark) {
+    background: var(--grey-950);
+    color: var(--white);
+  }
+}

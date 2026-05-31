@@ -21,17 +21,17 @@
 
     // Nuancier — génère --grey-50 à --grey-950, --blue-50 à --blue-950...
     $shades: (
-      950: 12%,
-      900: 20%,
-      800: 28%,
-      700: 35%,
-      600: 50%,
-      500: 60%,
-      400: 71%,
-      300: 82%,
-      200: 90%,
-      100: 95%,
-       50: 97%,
+            950: 12%,
+            900: 20%,
+            800: 28%,
+            700: 35%,
+            600: 50%,
+            500: 60%,
+            400: 71%,
+            300: 82%,
+            200: 90%,
+            100: 95%,
+            50: 97%,
     );
 
     @each $colorName, $colorValue in v.$colors {
@@ -51,6 +51,10 @@
         }
       }
     }
+
+    // Layout
+    --sidebar-width: #{v.$sidebar-width};
+    --header-height: #{v.$header-height};
   }
 
   *, *::before, *::after {
@@ -67,6 +71,7 @@
     font-family: v.$font-family;
     color: var(--black);
     background: var(--slate);
+    -webkit-font-smoothing: antialiased;
   }
 
   img {
