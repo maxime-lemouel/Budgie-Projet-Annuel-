@@ -17,7 +17,7 @@ define('DB_PASS', env('POSTGRES_PASSWORD', 'devpass'));
 
 // Configuration du site
 define('SITE_URL', env('SITE_URL', 'http://localhost:8080'));
-define('SITE_NAME', 'Mini WordPress');
+define('SITE_NAME', 'Budgie');
 
 // Configuration email
 define('MAIL_HOST', env('MAIL_HOST', 'mailhog'));          // Serveur SMTP
@@ -25,9 +25,9 @@ define('MAIL_PORT', env('MAIL_PORT', '1025'));             // Port SMTP
 define('MAIL_USERNAME', env('MAIL_USERNAME', ''));          // Username (vide pour MailHog)
 define('MAIL_PASSWORD', env('MAIL_PASSWORD', ''));          // Password (vide pour MailHog)
 define('MAIL_ENCRYPTION', env('MAIL_ENCRYPTION', ''));      // tls, ssl ou vide
-define('MAIL_FROM', env('MAIL_FROM', 'noreply@miniwordpress.local'));
-define('MAIL_FROM_NAME', env('MAIL_FROM_NAME', 'Mini WordPress'));
-define('MAIL_CONTACT', env('MAIL_CONTACT', 'contact@miniwordpress.local'));
+define('MAIL_FROM', env('MAIL_FROM', 'noreply@Budgie.local'));
+define('MAIL_FROM_NAME', env('MAIL_FROM_NAME', 'Budgie'));
+define('MAIL_CONTACT', env('MAIL_CONTACT', 'contact@Budgie.local'));
 
 // Clé de sécurité (IMPORTANT: Change cette valeur en production !)
 define('SECRET_KEY', env('SECRET_KEY', 'votre_cle_secrete_a_changer_123456'));
