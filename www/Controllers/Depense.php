@@ -40,7 +40,7 @@ class Depense
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-            // ponctuelle = true si le select vaut 'ponctuelle', false si 'mois'
+            // ponctuelle = true si le select vaut 'ponctuelle', false si 'jour'
             $ponctuelle = ($_POST['frequence'] ?? '') === 'ponctuelle';
 
             // iteration = N uniquement si récurrente
@@ -72,7 +72,7 @@ class Depense
             if (empty($data['date_debut']))
                 $errors[] = 'La date de début est obligatoire.';
             if (!$ponctuelle && ($iteration === null || $iteration < 1))
-                $errors[] = 'Le nombre de mois doit être supérieur à 0.';
+                $errors[] = 'Le nombre de jour doit être supérieur à 0.';
 
             if (empty($errors)) {
                 $id = $this->depenseModel->create($data);
@@ -149,7 +149,7 @@ public function edit(): void
         if (empty($data['date_debut']))
             $errors[] = 'La date de début est obligatoire.';
         if (!$ponctuelle && ($iteration === null || $iteration < 1))
-            $errors[] = 'Le nombre de mois doit être supérieur à 0.';
+            $errors[] = 'Le nombre de jour doit être supérieur à 0.';
 
         if (empty($errors)) {
             $updated = $this->depenseModel->update($id, $data);
