@@ -16,9 +16,9 @@ class Database {
      */
     protected function __construct() {
         try {
-
-            $this->pdo = new \PDO( 'pgsql:dbname=devdb;host=db' , 'devuser', 'devpass');
-
+            $this->pdo = new \PDO(
+                'pgsql:dbname=' . DB_NAME . ';host=' . DB_HOST . ';port=' . DB_PORT, DB_USER, DB_PASS
+            );
         } catch (\PDOException $e) {
             die("Erreur de connexion à la base de données : " . $e->getMessage());
         }
