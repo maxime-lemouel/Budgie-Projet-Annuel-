@@ -168,7 +168,7 @@ $autoOpen = $revenu !== null || !empty($errors);
                     <div class="form-group">
                         <label class="form-label" for="rev-frequence">Fréquence *</label>
                         <select class="form-control" name="frequence" id="rev-frequence">
-                            <option value="mois"       <?= isset($revenu['ponctuelle']) && !$revenu['ponctuelle'] ? 'selected' : '' ?>>Tous les N mois</option>
+                            <option value="mois"       <?= isset($revenu['ponctuelle']) && !$revenu['ponctuelle'] ? 'selected' : '' ?>>Tous les N jour</option>
                             <option value="ponctuelle" <?= isset($revenu['ponctuelle']) &&  $revenu['ponctuelle'] ? 'selected' : '' ?>>Ponctuelle</option>
                         </select>
                     </div>
@@ -176,7 +176,7 @@ $autoOpen = $revenu !== null || !empty($errors);
 
                 <div id="rev-iteration-block">
                     <div class="form-group">
-                        <label class="form-label" for="rev-iteration">Tous les N mois</label>
+                        <label class="form-label" for="rev-iteration">Tous les N jour</label>
                         <input class="form-control" type="number" name="iteration" id="rev-iteration"
                                min="1" value="<?= htmlspecialchars((string)($revenu['iteration'] ?? '1')) ?>"
                                style="max-width:120px;">
@@ -234,7 +234,7 @@ $autoOpen = $revenu !== null || !empty($errors);
         function toggleFrequence() {
             var isMois = fields.frequence.value === 'mois';
 
-            // Bloc "N mois" : visible uniquement en mode récurrent
+            // Bloc "N jour" : visible uniquement en mode récurrent
             iterBlock.style.display = isMois ? '' : 'none';
             isMois ? fields.iteration.setAttribute('required', '') : fields.iteration.removeAttribute('required');
 
