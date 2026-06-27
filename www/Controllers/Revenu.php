@@ -69,7 +69,7 @@ class Revenu
             if (empty($data['date_debut']))
                 $errors[] = 'La date de début est obligatoire.';
             if (!$ponctuelle && ($iteration === null || $iteration < 1))
-                $errors[] = 'Le nombre de mois doit être supérieur à 0.';
+                $errors[] = 'Le nombre de jour doit être supérieur à 0.';
 
             if (!empty($data['compte_id'])) {
                 $comptesDeLUtilisateur = array_column($accounts, 'id');
@@ -150,7 +150,7 @@ class Revenu
             if (empty($data['date_debut']))
                 $errors[] = 'La date de début est obligatoire.';
             if (!$ponctuelle && ($iteration === null || $iteration < 1))
-                $errors[] = 'Le nombre de mois doit être supérieur à 0.';
+                $errors[] = 'Le nombre de jour doit être supérieur à 0.';
 
             if (empty($errors)) {
                 $updated = $this->revenuModel->update($id, $data);
