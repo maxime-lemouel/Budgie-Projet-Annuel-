@@ -62,7 +62,7 @@ $autoOpen = $depense !== null || !empty($errors);
                             <?php if ($dep['ponctuelle']): ?>
                                 <span class="badge badge--grey">Ponctuelle</span>
                             <?php else: ?>
-                                <span class="badge badge--blue">/ <?= (int)$dep['iteration'] ?> jour</span>
+                                <span class="badge badge--blue">/ <?= (int)$dep['iteration'] ?> mois</span>
                             <?php endif; ?>
                         </td>
                         <td class="col--nowrap"><?= htmlspecialchars(substr($dep['date_debut'] ?? '', 0, 10)) ?></td>
@@ -76,7 +76,7 @@ $autoOpen = $depense !== null || !empty($errors);
                                     data-description="<?= htmlspecialchars($dep['description'] ?? '', ENT_QUOTES) ?>"
                                     data-compte-id="<?= $dep['compte_id'] ?>"
                                     data-montant="<?= htmlspecialchars($dep['montant'] ?? '', ENT_QUOTES) ?>"
-                                    data-frequence="<?= $dep['ponctuelle'] ? 'ponctuelle' : 'jour' ?>"
+                                    data-frequence="<?= $dep['ponctuelle'] ? 'ponctuelle' : 'mois' ?>"
                                     data-iteration="<?= htmlspecialchars($dep['iteration'] ?? '', ENT_QUOTES) ?>"
                                     data-date-debut="<?= htmlspecialchars(substr($dep['date_debut'] ?? '', 0, 10), ENT_QUOTES) ?>"
                                     data-date-fin="<?= htmlspecialchars(substr($dep['date_fin'] ?? '', 0, 10), ENT_QUOTES) ?>">
@@ -168,7 +168,7 @@ $autoOpen = $depense !== null || !empty($errors);
                     <div class="form-group">
                         <label class="form-label" for="dep-frequence">Fréquence *</label>
                         <select class="form-control" name="frequence" id="dep-frequence">
-                            <option value="jour"       <?= isset($depense['ponctuelle']) && !$depense['ponctuelle'] ? 'selected' : '' ?>>Tous les N jour</option>
+                            <option value="mois"       <?= isset($depense['ponctuelle']) && !$depense['ponctuelle'] ? 'selected' : '' ?>>Tous les N mois</option>
                             <option value="ponctuelle" <?= isset($depense['ponctuelle']) &&  $depense['ponctuelle'] ? 'selected' : '' ?>>Ponctuelle</option>
                         </select>
                     </div>
@@ -176,7 +176,7 @@ $autoOpen = $depense !== null || !empty($errors);
 
                 <div id="dep-iteration-block">
                     <div class="form-group">
-                        <label class="form-label" for="dep-iteration">Tous les N jour</label>
+                        <label class="form-label" for="dep-iteration">Tous les N mois</label>
                         <input class="form-control" type="number" name="iteration" id="dep-iteration"
                                min="1" value="<?= htmlspecialchars((string)($depense['iteration'] ?? '1')) ?>"
                                style="max-width:120px;">
@@ -233,15 +233,15 @@ $autoOpen = $depense !== null || !empty($errors);
 
         // Masque/affiche les blocs selon la fréquence choisie
         function toggleFrequence() {
-            var isJour = fields.frequence.value === 'jour';
+            var isMois = fields.frequence.value === 'mois';
 
-            // Bloc "N jour" : visible uniquement en mode récurrent
-            iterBlock.style.display = isJour ? '' : 'none';
-            isJour ? fields.iteration.setAttribute('required', '') : fields.iteration.removeAttribute('required');
+            // Bloc "N mois" : visible uniquement en mode récurrent
+            iterBlock.style.display = isMois ? '' : 'none';
+            isMois ? fields.iteration.setAttribute('required', '') : fields.iteration.removeAttribute('required');
 
             // Bloc "date de fin" : masqué en mode ponctuel (n'a aucun sens)
-            dateFinGrp.style.display = isJour ? '' : 'none';
-            if (!isJour) {
+            dateFinGrp.style.display = isMois ? '' : 'none';
+            if (!isMois) {
                 fields.dateFin.value = ''; // on vide pour ne pas envoyer de valeur parasite
             }
         }
@@ -258,7 +258,7 @@ $autoOpen = $depense !== null || !empty($errors);
             fields.description.value = '';
             fields.compteId.value    = '';
             fields.montant.value     = '';
-            fields.frequence.value   = 'jour';
+            fields.frequence.value   = 'mois';
             fields.iteration.value   = '1';
             fields.dateDebut.value   = '';
             fields.dateFin.value     = '';
@@ -274,7 +274,7 @@ $autoOpen = $depense !== null || !empty($errors);
             fields.description.value = data.description || '';
             fields.compteId.value    = data.compteId    || '';
             fields.montant.value     = data.montant      || '';
-            fields.frequence.value   = data.frequence   || 'jour';
+            fields.frequence.value   = data.frequence   || 'mois';
             fields.iteration.value   = data.iteration   || '1';
             fields.dateDebut.value   = data.dateDebut   || '';
             fields.dateFin.value     = data.dateFin     || '';
