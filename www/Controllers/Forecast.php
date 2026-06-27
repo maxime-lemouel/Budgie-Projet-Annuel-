@@ -160,13 +160,13 @@ class Forecast
                         ?? 1
                     );
 
-                    $nbJours =
-                        $dateDebut
-                            ->diff($dateCourante)
-                            ->days;
+                    $nbMois = ((int)$dateCourante->format('Y') - (int)$dateDebut->format('Y')) * 12
+                        + ((int)$dateCourante->format('m') - (int)$dateDebut->format('m'));
 
                     if (
-                        $nbJours % $iteration === 0
+                        $nbMois >= 0
+                        && $nbMois % $iteration === 0
+                        && $dateCourante->format('d') === $dateDebut->format('d')
                     ) {
                         $solde += $montant;
                     }
@@ -234,13 +234,13 @@ class Forecast
                         ?? 1
                     );
 
-                    $nbJours =
-                        $dateDebut
-                            ->diff($dateCourante)
-                            ->days;
+                    $nbMois = ((int)$dateCourante->format('Y') - (int)$dateDebut->format('Y')) * 12
+                        + ((int)$dateCourante->format('m') - (int)$dateDebut->format('m'));
 
                     if (
-                        $nbJours % $iteration === 0
+                        $nbMois >= 0
+                        && $nbMois % $iteration === 0
+                        && $dateCourante->format('d') === $dateDebut->format('d')
                     ) {
                         $solde -= $montant;
                     }
