@@ -160,13 +160,16 @@ class Forecast
                         ?? 1
                     );
 
-                    $nbMois = ((int)$dateCourante->format('Y') - (int)$dateDebut->format('Y')) * 12
-                        + ((int)$dateCourante->format('m') - (int)$dateDebut->format('m'));
+                    $nbMois = ((int)$dateCourante->format('Y') - (int)$dateDebut->format('Y')) * 12 + ((int)$dateCourante->format('m') - (int)$dateDebut->format('m'));
+
+                    $jourDebut = (int)$dateDebut->format('d');
+                    $dernierJourMois = (int)$dateCourante->format('t');
+                    $jourCible = min($jourDebut, $dernierJourMois);
 
                     if (
                         $nbMois >= 0
                         && $nbMois % $iteration === 0
-                        && $dateCourante->format('d') === $dateDebut->format('d')
+                        && (int)$dateCourante->format('d') === $jourCible
                     ) {
                         $solde += $montant;
                     }
@@ -237,10 +240,14 @@ class Forecast
                     $nbMois = ((int)$dateCourante->format('Y') - (int)$dateDebut->format('Y')) * 12
                         + ((int)$dateCourante->format('m') - (int)$dateDebut->format('m'));
 
+                    $jourDebut = (int)$dateDebut->format('d');
+                    $dernierJourMois = (int)$dateCourante->format('t'); // 't' = nb de jours dans le mois courant
+                    $jourCible = min($jourDebut, $dernierJourMois);
+
                     if (
                         $nbMois >= 0
                         && $nbMois % $iteration === 0
-                        && $dateCourante->format('d') === $dateDebut->format('d')
+                        && (int)$dateCourante->format('d') === $jourCible
                     ) {
                         $solde -= $montant;
                     }
