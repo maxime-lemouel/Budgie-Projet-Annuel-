@@ -7,19 +7,36 @@ services:
       dockerfile: Dockerfile
     container_name: budgie-web
     ports:
-      - "8080:80"
+      - "80:80"
+      - "443:443"
     volumes:
       - ./www:/var/www/html:cached
       - ./php.ini:/usr/local/etc/php/conf.d/custom.ini:ro
+      - ./docker/apache/000-default.conf:/etc/apache2/sites-enabled/000-default.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     environment:
       - APACHE_LOG_DIR=/var/log/apache2
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - SITE_URL=${SITE_URL}
+      - MAIL_HOST=${MAIL_HOST}
+      - MAIL_PORT=${MAIL_PORT}
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - MAIL_ENCRYPTION=${MAIL_ENCRYPTION}
+      - MAIL_FROM=${MAIL_FROM}
+      - MAIL_FROM_NAME=${MAIL_FROM_NAME}
+      - SECRET_KEY=${SECRET_KEY}
+      - DEBUG_MODE=false
     depends_on:
       - db
-      - mailhog
+    restart: unless-stopped
 
   db:
     image: postgres:15-alpine
-    container_name: budgie-d
+    container_name: budgie-db
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -27,30 +44,5 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - pgdata:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-
-  pgadmin:
-    image: dpage/pgadmin4:7
-    container_name: budgie-pgadmin
-    restart: unless-stopped
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-    ports:
-      - "5050:80"
-    volumes:
-      - pgadmin-data:/var/lib/pgadmin
-    depends_on:
-      - db
-
-  mailhog:
-    image: mailhog/mailhog
-    container_name: budgie-mailhog
-    ports:
-      - "8025:8025"
-      - "1025:1025"
-
 volumes:
   pgdata:
-  pgadmin-data:
