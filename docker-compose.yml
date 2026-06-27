@@ -6,6 +6,8 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: budgie-web
+    env_file:
+      - .env
     ports:
       - "80:80"
       - "443:443"
