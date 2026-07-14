@@ -21,7 +21,7 @@ $email = htmlspecialchars($email ?? '');
 </div>
 
 <div class="stats-grid">
-    <div class="stat-card">
+    <div class="stat-card stat-card--clickable">
         <div class="stat-card__icon stat-card__icon--blue">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.7"
                  stroke="currentColor">
@@ -35,7 +35,7 @@ $email = htmlspecialchars($email ?? '');
         </div>
     </div>
 
-    <div class="stat-card">
+    <div class="stat-card stat-card--clickable">
         <div class="stat-card__icon stat-card__icon--green">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.3" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 19.5V4.5m0 0l-5 5m5-5l5 5"/>
@@ -47,7 +47,7 @@ $email = htmlspecialchars($email ?? '');
         </div>
     </div>
 
-    <div class="stat-card">
+    <div class="stat-card stat-card--clickable">
         <div class="stat-card__icon stat-card__icon--red">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.7"
                  stroke="currentColor">
@@ -60,7 +60,7 @@ $email = htmlspecialchars($email ?? '');
         </div>
     </div>
 
-    <div class="stat-card">
+    <div class="stat-card stat-card--clickable">
         <div class="stat-card__icon stat-card__icon--grey">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.7"
                  stroke="currentColor">
