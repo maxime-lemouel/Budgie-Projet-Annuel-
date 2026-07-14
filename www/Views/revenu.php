@@ -231,6 +231,15 @@ $autoOpen = $revenu !== null || !empty($errors);
         var iterBlock  = document.getElementById('rev-iteration-block');
         var dateFinGrp = document.getElementById('rev-date-fin-group');
 
+        function syncMinDate() {
+            fields.dateFin.min = fields.dateDebut.value;
+            if (fields.dateFin.value && fields.dateFin.value < fields.dateDebut.value) {
+                fields.dateFin.value = '';
+            }
+        }
+        fields.dateDebut.addEventListener('change', syncMinDate);
+        syncMinDate();
+        
         function toggleFrequence() {
             var isMois = fields.frequence.value === 'mois';
 
@@ -262,6 +271,7 @@ $autoOpen = $revenu !== null || !empty($errors);
             fields.dateDebut.value   = '';
             fields.dateFin.value     = '';
             toggleFrequence();
+            syncMinDate();
         }
 
         function fillForEdit(data) {
@@ -278,6 +288,7 @@ $autoOpen = $revenu !== null || !empty($errors);
             fields.dateDebut.value   = data.dateDebut   || '';
             fields.dateFin.value     = data.dateFin     || '';
             toggleFrequence();
+            syncMinDate();
         }
 
         document.querySelectorAll('[data-modal-open="modal-revenu"]').forEach(function (btn) {
