@@ -1105,6 +1105,15 @@
         width: 1%;
         white-space: nowrap;
     }
+    .data-table td.col--shrink {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+    .data-table td.col--shrink form {
+        display: inline-flex;
+        margin: 0;
+    }
     .data-table .col--nowrap {
         white-space: nowrap;
     }
