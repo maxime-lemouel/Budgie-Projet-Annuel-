@@ -73,15 +73,17 @@ $datePrevision =
             <?php
             $type = $account['type'] ?? '';
 
-            $badgeClass =
-                    $type === 'livret_a'
-                            ? 'badge--green'
-                            : 'badge--blue';
+            $badgeClass = match ($type) {
+                    'livret_a'       => 'badge--green',
+                    'compte_courant' => 'badge--blue',
+                    default          => 'badge--grey',
+            };
 
-            $iconClass =
-                    $type === 'livret_a'
-                            ? 'stat-card__icon--green'
-                            : 'stat-card__icon--blue';
+            $iconClass = match ($type) {
+                    'livret_a'       => 'stat-card__icon--green',
+                    'compte_courant' => 'stat-card__icon--blue',
+                    default          => 'stat-card__icon--grey',
+            };
 
             $typeLabel =
                     match ($type) {
