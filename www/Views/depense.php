@@ -5,6 +5,12 @@ $accounts = isset($accounts) ? json_decode($accounts, true) : [];
 $depense  = isset($depense)  ? json_decode($depense,  true) : null;
 
 $autoOpen = $depense !== null || !empty($errors);
+
+function formatDateFr(?string $date): string {
+    if (!$date) return '—';
+    $d = DateTime::createFromFormat('Y-m-d', substr($date, 0, 10));
+    return $d ? htmlspecialchars($d->format('d/m/Y')) : htmlspecialchars($date);
+}
 ?>
 
 <div class="page-heading">
@@ -65,8 +71,8 @@ $autoOpen = $depense !== null || !empty($errors);
                                 <span class="badge badge--blue">/ <?= (int)$dep['iteration'] ?> mois</span>
                             <?php endif; ?>
                         </td>
-                        <td class="col--nowrap"><?= htmlspecialchars(substr($dep['date_debut'] ?? '', 0, 10)) ?></td>
-                        <td class="col--nowrap"><?= $dep['date_fin'] ? htmlspecialchars(substr($dep['date_fin'], 0, 10)) : '—' ?></td>
+                        <td class="col--nowrap"><?= formatDateFr($dep['date_debut'] ?? null) ?></td>
+                        <td class="col--nowrap"><?= formatDateFr($dep['date_fin'] ?? null) ?></td>
                         <td class="col--shrink" style="white-space:nowrap;">
                             <button class="button button--ghost button--sm"
                                     data-modal-open="modal-depense"

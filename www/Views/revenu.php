@@ -5,6 +5,12 @@ $accounts = isset($accounts) ? json_decode($accounts, true) : [];
 $revenu   = isset($revenu)   ? json_decode($revenu,   true) : null;
 
 $autoOpen = $revenu !== null || !empty($errors);
+
+function formatDateFr(?string $date): string {
+    if (!$date) return '—';
+    $d = DateTime::createFromFormat('Y-m-d', substr($date, 0, 10));
+    return $d ? htmlspecialchars($d->format('d/m/Y')) : htmlspecialchars($date);
+}
 ?>
 
 <div class="page-heading">
@@ -65,8 +71,8 @@ $autoOpen = $revenu !== null || !empty($errors);
                                 <span class="badge badge--blue">/ <?= (int)$rev['iteration'] ?> mois</span>
                             <?php endif; ?>
                         </td>
-                        <td class="col--nowrap"><?= htmlspecialchars(substr($rev['date_debut'] ?? '', 0, 10)) ?></td>
-                        <td class="col--nowrap"><?= $rev['date_fin'] ? htmlspecialchars(substr($rev['date_fin'], 0, 10)) : '—' ?></td>
+                        <td class="col--nowrap"><?= formatDateFr($rev['date_debut'] ?? null) ?></td>
+                        <td class="col--nowrap"><?= formatDateFr($rev['date_fin'] ?? null) ?></td>
                         <td class="col--shrink" style="white-space:nowrap;">
                             <button class="button button--ghost button--sm"
                                     data-modal-open="modal-revenu"
