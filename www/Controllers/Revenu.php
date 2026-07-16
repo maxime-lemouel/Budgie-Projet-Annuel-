@@ -68,6 +68,8 @@ class Revenu
                 $errors[] = 'Le montant doit être positif.';
             if (empty($data['date_debut']))
                 $errors[] = 'La date de début est obligatoire.';
+            if (!empty($data['date_fin']) && !empty($data['date_debut']) && $data['date_fin'] < $data['date_debut'])
+                $errors[] = 'La date de fin ne peut pas être antérieure à la date de début.';
             if (!$ponctuelle && ($iteration === null || $iteration < 1))
                 $errors[] = 'Le nombre de mois doit être supérieur à 0.';
 
@@ -149,6 +151,8 @@ class Revenu
                 $errors[] = 'Le montant doit être positif.';
             if (empty($data['date_debut']))
                 $errors[] = 'La date de début est obligatoire.';
+            if (!empty($data['date_fin']) && !empty($data['date_debut']) && $data['date_fin'] < $data['date_debut'])
+                $errors[] = 'La date de fin ne peut pas être antérieure à la date de début.';
             if (!$ponctuelle && ($iteration === null || $iteration < 1))
                 $errors[] = 'Le nombre de mois doit être supérieur à 0.';
 
