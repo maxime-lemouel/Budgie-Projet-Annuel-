@@ -22,6 +22,12 @@ function getBadgeClass(array $compte): string {
         default          => 'badge--grey',
     };
 }
+
+function formatDateFr(?string $date): string {
+    if (!$date) return '—';
+    $d = DateTime::createFromFormat('Y-m-d', substr($date, 0, 10));
+    return $d ? htmlspecialchars($d->format('d/m/Y')) : htmlspecialchars($date);
+}
 ?>
 
 <div class="page-heading">
@@ -76,7 +82,7 @@ function getBadgeClass(array $compte): string {
                         <td class="col--muted"><?= htmlspecialchars($compte['description'] ?? '—') ?></td>
                         <td class="col--nowrap"><?= $compte['taux_remuneration'] !== null ? number_format($compte['taux_remuneration'], 2) . ' %' : '—' ?></td>
                         <td class="col--nowrap"><?= $compte['taux_imposition'] !== null ? number_format($compte['taux_imposition'], 2) . ' %' : '—' ?></td>
-                        <td class="col--nowrap"><?= htmlspecialchars($compte['date_creation'] ?? '') ?></td>
+                        <td class="col--nowrap"><?= formatDateFr($compte['date_creation'] ?? null) ?></td>
                         <td class="col--shrink" style="white-space:nowrap;">
                             <button class="button button--ghost button--sm"
                                     data-modal-open="modal-compte"
