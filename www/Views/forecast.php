@@ -6,6 +6,12 @@ $accounts = isset($accounts)
 $datePrevision =
         $datePrevision
         ?? date('Y-m-d');
+
+function formatDateFr(?string $date): string {
+    if (!$date) return '—';
+    $d = DateTime::createFromFormat('Y-m-d', substr($date, 0, 10));
+    return $d ? htmlspecialchars($d->format('d/m/Y')) : htmlspecialchars($date);
+}
 ?>
 
     <div class="page-heading">
@@ -148,7 +154,7 @@ $datePrevision =
                 <hr class="stat-card__divider">
 
                 <div class="stat-card__label">
-                    Solde prévisionnel au <?= htmlspecialchars($datePrevision) ?>
+                    Solde prévisionnel au <?= formatDateFr($datePrevision) ?>
                 </div>
 
                 <div class="stat-card__value <?= $soldeClass ?>">
